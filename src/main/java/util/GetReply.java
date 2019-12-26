@@ -15,4 +15,12 @@ public class GetReply {
     public String getKey() {
         return key;
     }
+
+    public Timestamp getUpdateTime() {
+        return updateTime;
+    }
+
+    public Timestamp getGlobalStableTime() {
+        return globalStableTime;
+    }
 }

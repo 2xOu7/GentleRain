@@ -76,7 +76,6 @@ public class Server {
      */
 
     private String constructSuccessfulGetResponse(Item item) {
-        String[] tokens = new String[4];
         GetReply gr = new GetReply(item.getValue(), item.getUpdateTime(), this.globalStableTime);
         return new Gson().toJson(gr);
     }
@@ -126,7 +125,6 @@ public class Server {
          */
 
         if (globalStableTime.compareTo(time) < 0) {
-            System.out.println("Updating time");
             globalStableTime = time;
         }
 

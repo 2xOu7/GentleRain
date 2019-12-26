@@ -57,6 +57,15 @@ public class Client extends Thread {
 
         String response = fetchResultFromClientHandler(clientHandlerMsg); // return the result of the GET request
         GetReply reply = new Gson().fromJson(response, GetReply.class);
+
+        if (this.dependencyTime.compareTo(reply.getUpdateTime()) < 0) {
+            this.dependencyTime = reply.getUpdateTime();
+        }
+
+        if (this.globalStableTime.compareTo(reply.getGlobalStableTime()) < 0) {
+            this.globalStableTime = reply.getGlobalStableTime();
+        }
+
         return response;
     }
 
@@ -120,9 +129,11 @@ public class Client extends Thread {
     }
 
     public static void main(String[] args) {
-        int numPartitions = Integer.parseInt(args[0]); // number of partitions in the data center
-        int replicaId = Integer.parseInt(args[1]); // replica id or the id of this data center
+//        int numPartitions = Integer.parseInt(args[0]); // number of partitions in the data center
+//        int replicaId = Integer.parseInt(args[1]); // replica id or the id of this data center
 
+        int numPartitions = 5; // number of partitions in the data center
+        int replicaId = 1; // replica id or the id of this data center
         new Client(numPartitions, replicaId);
     }
 }
