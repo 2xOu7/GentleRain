@@ -5,7 +5,10 @@ import kong.unirest.Unirest;
 import spark.Request;
 import spark.Response;
 import util.*;
+
+import java.sql.Time;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static spark.Spark.*;
 
@@ -25,6 +28,8 @@ public class Server {
     private int partitionId;
     private int numReplicas;
     private Logger logger;
+    private ReentrantLock gstLock = new ReentrantLock(true);
+    private ReentrantLock vvLock = new ReentrantLock(true);
 
     public Server(int partitionId, int replicaId, int numReplicas) {
         Timestamp now = new Timestamp(replicaId, partitionId);
@@ -259,6 +264,34 @@ public class Server {
 
     public int getPartitionId() {
         return this.partitionId;
+    }
+
+    public void setGlobalStableTime(Timestamp globalStableTime) {
+        try {
+            gstLock.lock();
+            this.globalStableTime = globalStableTime;
+
+        } finally {
+            gstLock.unlock();
+        }
+    }
+
+    public Timestamp[] getVersionVector() {
+        Timestamp[] vv;
+
+        try {
+            vvLock.lock();
+            vv = this.versionVector;
+
+        } finally {
+            vvLock.unlock();
+        }
+
+        return vv;
+    }
+
+    public int getNumReplicas() {
+        return numReplicas;
     }
 
     public static void main(String[] args) {
