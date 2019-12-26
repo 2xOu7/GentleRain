@@ -173,6 +173,7 @@ public class Server {
      */
 
     private void broadcastReplicateRequest(Item d) {
+
         for (int i = 1; i < this.numReplicas + 1; i++) {
 
             if (i == this.replicaId) {
