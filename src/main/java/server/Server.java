@@ -67,7 +67,7 @@ public class Server {
      */
 
     private String constructFailedGetResponse() {
-        return ClientServerEnum.NOT_FOUND.toString();
+        return ResponseEnum.NOT_FOUND.toString();
     }
 
     /**
@@ -245,7 +245,7 @@ public class Server {
         addVersion(d);
         this.versionVector[replicaReceivedFrom] = d.getUpdateTime();
 
-        return ResponseEnums.RECEIVED.toString();
+        return ResponseEnum.RECEIVED.toString();
     }
 
     public int getReplicaId() {

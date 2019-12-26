@@ -1,6 +1,6 @@
 package client;
 
-import util.ClientServerEnum;
+import util.ClientHandlerEnum;
 import kong.unirest.*;
 
 /***
@@ -75,8 +75,8 @@ public class ClientHandler {
      */
 
     private String resolveGetReq(String[] tokens) {
-        ClientServerEnum command = ClientServerEnum.valueOf(tokens[0]);
-        assert(command == ClientServerEnum.GET_REQ);
+        ClientHandlerEnum command = ClientHandlerEnum.valueOf(tokens[0]);
+        assert(command == ClientHandlerEnum.GET_REQ);
 
         String key = tokens[1];
         String time = tokens[2];
@@ -92,8 +92,8 @@ public class ClientHandler {
      */
 
     private String resolvePutReq(String[] tokens) {
-        ClientServerEnum command = ClientServerEnum.valueOf(tokens[0]);
-        assert(command == ClientServerEnum.PUT_REQ);
+        ClientHandlerEnum command = ClientHandlerEnum.valueOf(tokens[0]);
+        assert(command == ClientHandlerEnum.PUT_REQ);
 
         String key = tokens[1];
         String value = tokens[2];
@@ -112,7 +112,7 @@ public class ClientHandler {
     public String processMessage(String msg) {
         String messageDelimiter = " ";
         String[] tokens = msg.split(messageDelimiter);
-        ClientServerEnum command = ClientServerEnum.valueOf(tokens[0]);
+        ClientHandlerEnum command = ClientHandlerEnum.valueOf(tokens[0]);
 
         switch (command) {
 
@@ -132,6 +132,5 @@ public class ClientHandler {
         }
 
         return "";
-
     }
 }
