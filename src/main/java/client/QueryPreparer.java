@@ -16,7 +16,7 @@ public class QueryPreparer {
      * @param res - response of query
      */
 
-    public static void prepare(Request req, Response res) {
+    public static void prepareQuery(Request req, Response res) {
         res.header(CONTENT_TYPE, JSON_RES);
     }
 

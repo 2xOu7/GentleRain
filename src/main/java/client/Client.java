@@ -49,7 +49,7 @@ public class Client extends Thread {
      */
 
     private String processGetRequest(Request req, Response res) {
-        QueryPreparer.prepare(req, res);
+        QueryPreparer.prepareQuery(req, res);
         String key = req.params(ClientConstants.KEY_PARAM); // get the key
         String clientHandlerMsg = createGetReqMessage(key); // create a get request message involving the key
 
@@ -93,7 +93,7 @@ public class Client extends Thread {
      */
 
     private String processPutRequest(Request req, Response res) {
-        QueryPreparer.prepare(req, res);
+        QueryPreparer.prepareQuery(req, res);
 
         String key = req.splat()[0];
         String value = req.splat()[1];
