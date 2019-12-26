@@ -5,8 +5,6 @@ import kong.unirest.Unirest;
 import spark.Request;
 import spark.Response;
 import util.*;
-
-import java.sql.Time;
 import java.util.*;
 
 import static spark.Spark.*;
@@ -257,13 +255,13 @@ public class Server {
     }
 
     public static void main(String[] args) {
-//        int partitionId = Integer.parseInt(args[0]); // the partition id that this server represents
-//        int replicaId = Integer.parseInt(args[1]); // the replica id that this server is part of and responds to
-//        int numReplicas = Integer.parseInt(args[2]); // number of total replicas or data centers
+        int partitionId = Integer.parseInt(args[0]); // the partition id that this server represents
+        int replicaId = Integer.parseInt(args[1]); // the replica id that this server is part of and responds to
+        int numReplicas = Integer.parseInt(args[2]); // number of total replicas or data centers
 
-        int partitionId = 4; // the partition id that this server represents
-        int replicaId = 1; // the replica id that this server is part of and responds to
-        int numReplicas = 5; // number of total replicas or data centers
+//        int partitionId = 4; // the partition id that this server represents
+//        int replicaId = 1; // the replica id that this server is part of and responds to
+//        int numReplicas = 5; // number of total replicas or data centers
         new Server(partitionId, replicaId, numReplicas);
     }
 }

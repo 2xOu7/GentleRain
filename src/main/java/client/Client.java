@@ -78,7 +78,7 @@ public class Client extends Thread {
     private String createPutReqMessage(String key, String value, Timestamp dependencyTime) {
         String[] tokens = new String[5];
 
-        tokens[0] = ClientServerEnum.PUT_REQ.toString();
+        tokens[0] = ClientHandlerEnum.PUT_REQ.toString();
         tokens[1] = key;
         tokens[2] = value;
         tokens[3] = dependencyTime.toString();
@@ -129,7 +129,7 @@ public class Client extends Thread {
     private String createGetReqMessage(String key) {
         String[] tokens = new String[3];
 
-        tokens[0] = ClientServerEnum.GET_REQ.toString();
+        tokens[0] = ClientHandlerEnum.GET_REQ.toString();
         tokens[1] = key;
         tokens[2] = globalStableTime.toString();
 
