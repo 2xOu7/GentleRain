@@ -1,8 +1,9 @@
 package client;
 
 import spark.Request;
+import spark.Response;
 import util.ClientServerEnum;
-import util.GetRequest;
+import util.GetReply;
 import util.ResponseEnums;
 import util.Timestamp;
 import com.google.gson.*;
@@ -34,7 +35,7 @@ public class Client extends Thread {
          * GET route for a given key
          *******************************************************************/
 
-        get(ClientConstants.CLIENT_GET_PATH, (req, res) -> this.processGetRequest(req));
+        get(ClientConstants.CLIENT_GET_PATH, this::processGetRequest);
 
         /*******************************************************************
          * PUT route for a given key value pair
@@ -49,10 +50,14 @@ public class Client extends Thread {
      * @return - return the result of the get request
      */
 
-    private String processGetRequest(Request req) {
+    private String processGetRequest(Request req, Response res) {
+        res.header("Content-Type", "application/json");
         String key = req.params(ClientConstants.KEY_PARAM); // get the key
         String clientHandlerMsg = createGetReqMessage(key); // create a get request message involving the key
-        return fetchResultFromClientHandler(clientHandlerMsg); // return the result of the GET request
+
+        String response = fetchResultFromClientHandler(clientHandlerMsg); // return the result of the GET request
+        GetReply reply = new Gson().fromJson(response, GetReply.class);
+        return response;
     }
 
     /**

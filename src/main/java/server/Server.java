@@ -1,11 +1,9 @@
 package server;
 
+import com.google.gson.Gson;
 import kong.unirest.Unirest;
 import spark.Request;
-import util.ClientServerEnum;
-import util.Item;
-import util.ResponseEnums;
-import util.Timestamp;
+import util.*;
 
 import java.sql.Time;
 import java.util.*;
@@ -31,7 +29,7 @@ public class Server {
     private Logger logger;
 
     public Server(int partitionId, int replicaId, int numReplicas) {
-        Timestamp now = new Timestamp(replicaId, -1);
+        Timestamp now = new Timestamp(replicaId, partitionId);
 
         localStableTime = now;
         globalStableTime = now;
@@ -79,14 +77,8 @@ public class Server {
 
     private String constructSuccessfulGetResponse(Item item) {
         String[] tokens = new String[4];
-
-        tokens[0] = ClientServerEnum.GET_REPLY.toString();
-        tokens[1] = item.getValue();
-        tokens[2] = item.getUpdateTime().toString();
-        tokens[3] = this.globalStableTime.toString();
-
-        return String.join(" ", tokens);
-
+        GetReply gr = new GetReply(item.getValue(), item.getUpdateTime(), this.globalStableTime);
+        return new Gson().toJson(gr);
     }
 
     /**
@@ -134,6 +126,7 @@ public class Server {
          */
 
         if (globalStableTime.compareTo(time) < 0) {
+            System.out.println("Updating time");
             globalStableTime = time;
         }
 
@@ -270,13 +263,13 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        int partitionId = Integer.parseInt(args[0]); // the partition id that this server represents
-        int replicaId = Integer.parseInt(args[1]); // the replica id that this server is part of and responds to
-        int numReplicas = Integer.parseInt(args[2]); // number of total replicas or data centers
+//        int partitionId = Integer.parseInt(args[0]); // the partition id that this server represents
+//        int replicaId = Integer.parseInt(args[1]); // the replica id that this server is part of and responds to
+//        int numReplicas = Integer.parseInt(args[2]); // number of total replicas or data centers
 
-//        int partitionId = 4; // the partition id that this server represents
-//        int replicaId = 1; // the replica id that this server is part of and responds to
-//        int numReplicas = 5; // number of total replicas or data centers
+        int partitionId = 4; // the partition id that this server represents
+        int replicaId = 1; // the replica id that this server is part of and responds to
+        int numReplicas = 5; // number of total replicas or data centers
         new Server(partitionId, replicaId, numReplicas);
     }
 }
