@@ -2,10 +2,7 @@ package client;
 
 import spark.Request;
 import spark.Response;
-import util.ClientServerEnum;
-import util.GetReply;
-import util.ResponseEnums;
-import util.Timestamp;
+import util.*;
 import com.google.gson.*;
 import static spark.Spark.*;
 
@@ -41,7 +38,7 @@ public class Client extends Thread {
          * PUT route for a given key value pair
          *******************************************************************/
 
-        put(ClientConstants.CLIENT_PUT_PATH, (req, res) -> this.processPutRequest(req));
+        put(ClientConstants.CLIENT_PUT_PATH, this::processPutRequest);
     }
 
     /**
@@ -94,13 +91,22 @@ public class Client extends Thread {
      * @return = a message indicating whether or not the message has been received
      */
 
-    private String processPutRequest(Request req) {
+    private String processPutRequest(Request req, Response res) {
+        res.header("Content-Type", "application/json");
         String key = req.splat()[0];
         String value = req.splat()[1];
 
         Timestamp dependencyTime = this.dependencyTime;
         String clientHandlerMsg = createPutReqMessage(key, value, dependencyTime);
-        return fetchResultFromClientHandler(clientHandlerMsg);
+
+        String response = fetchResultFromClientHandler(clientHandlerMsg);
+        PutReply reply = new Gson().fromJson(response, PutReply.class);
+
+        if (this.dependencyTime.compareTo(reply.getDependencyTime()) < 0) {
+            this.dependencyTime = reply.getDependencyTime();
+        }
+
+        return response;
     }
 
     /**

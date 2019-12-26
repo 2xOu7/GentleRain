@@ -154,8 +154,6 @@ public class Server {
         String value = req.splat()[1];
         Timestamp ts = new Timestamp(req.splat()[2]);
 
-        this.logger.logPrint("Processing put request for " + key);
-
         long clockTime = waitUntil(ts);
 
         versionVector[this.replicaId] = new Timestamp()
@@ -182,6 +180,7 @@ public class Server {
             }
 
             int port = ServerConstants.BASE_PORT * i + this.partitionId;
+
             try {
                 Unirest.put("http://localhost:{port}/replicate/{id}/{item}")
                         .routeParam("port", Integer.toString(port))
@@ -202,13 +201,8 @@ public class Server {
      */
 
     private String constructSuccessfulPutResponse(Timestamp ts) {
-        String[] tokens = new String[2];
-
-        tokens[0] = ClientServerEnum.PUT_REPLY.toString();
-        tokens[1] = ts.toString();
-
-        return String.join(this.delimiter, tokens);
-
+        PutReply pr = new PutReply(ts);
+        return new Gson().toJson(pr);
     }
 
     /**
@@ -232,7 +226,7 @@ public class Server {
 
             currTime = System.nanoTime();
         }
-        
+
         return currTime;
     }
 
