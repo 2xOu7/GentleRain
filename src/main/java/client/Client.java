@@ -17,6 +17,7 @@ public class Client extends Thread {
     private ClientHandler clientHandler;
     private Timestamp dependencyTime;
     private Timestamp globalStableTime;
+    private String delimiter = " ";
 
     public Client(int numPartitions, int replicaId) {
         clientHandler = new ClientHandler(replicaId, numPartitions);
@@ -48,7 +49,7 @@ public class Client extends Thread {
      */
 
     private String processGetRequest(Request req, Response res) {
-        res.header("Content-Type", "application/json");
+        QueryPreparer.prepare(req, res);
         String key = req.params(ClientConstants.KEY_PARAM); // get the key
         String clientHandlerMsg = createGetReqMessage(key); // create a get request message involving the key
 
@@ -82,7 +83,7 @@ public class Client extends Thread {
         tokens[2] = value;
         tokens[3] = dependencyTime.toString();
 
-        return String.join(" ", tokens);
+        return String.join(this.delimiter, tokens);
     }
 
     /**
@@ -92,7 +93,8 @@ public class Client extends Thread {
      */
 
     private String processPutRequest(Request req, Response res) {
-        res.header("Content-Type", "application/json");
+        QueryPreparer.prepare(req, res);
+
         String key = req.splat()[0];
         String value = req.splat()[1];
 
@@ -131,7 +133,7 @@ public class Client extends Thread {
         tokens[1] = key;
         tokens[2] = globalStableTime.toString();
 
-        return String.join(" ", tokens);
+        return String.join(this.delimiter, tokens);
     }
 
     public static void main(String[] args) {

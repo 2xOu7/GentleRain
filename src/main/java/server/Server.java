@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import kong.unirest.Unirest;
 import spark.Request;
+import spark.Response;
 import util.*;
 
 import java.sql.Time;
@@ -25,7 +26,6 @@ public class Server {
     private int replicaId; // replica id
     private int partitionId;
     private int numReplicas;
-    private String delimiter = " ";
     private Logger logger;
 
     public Server(int partitionId, int replicaId, int numReplicas) {
@@ -43,6 +43,7 @@ public class Server {
         this.replicaId = replicaId;
         this.partitionId = partitionId;
         this.numReplicas = numReplicas;
+
         port(portToBind);
         this.logger = new Logger(this);
 
@@ -55,7 +56,7 @@ public class Server {
      */
 
     private void declareRoutes() {
-        get(ServerConstants.SERVER_GET_PATH, (req, res) -> this.processGetRequest(req));
+        get(ServerConstants.SERVER_GET_PATH, this::processGetRequest);
         put(ServerConstants.SERVER_PUT_PATH, (req, res) -> this.processPutRequest(req));
         put(ServerConstants.SERVER_REPLICATE_PATH, (req, res) -> this.processReplicateRequest(req));
     }
@@ -116,12 +117,12 @@ public class Server {
      * @return - the result of the GET request
      */
 
-    private String processGetRequest(Request req) {
+    private String processGetRequest(Request req, Response res) {
         String key = req.splat()[0];
         Timestamp time = new Timestamp(req.splat()[1]);
 
-        /**
-         * Update global stable time appropriately
+        /*
+          Update global stable time appropriately
          */
 
         if (globalStableTime.compareTo(time) < 0) {
