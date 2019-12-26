@@ -32,7 +32,7 @@ public class Server {
         localStableTime = now;
         globalStableTime = now;
 
-        versionVector = new Timestamp[numReplicas];
+        versionVector = new Timestamp[numReplicas + 1];
         Arrays.fill(versionVector, now);
 
         versionChain = new HashMap<>();
@@ -119,6 +119,10 @@ public class Server {
         String key = req.splat()[0];
         Timestamp time = new Timestamp(req.splat()[1]);
 
+        this.logger.logPrint("Processing GET request with key: " + key + ", time: " + time.toString());
+        this.logger.logPrint("Incoming Time: " + time);
+        this.logger.logPrint("Current Time: " + this.globalStableTime.toString());
+
         /*
           Update global stable time appropriately
          */
@@ -127,6 +131,7 @@ public class Server {
             globalStableTime = time;
         }
 
+        System.out.println("GST: " + globalStableTime.toString());
         return this.getLatestVersion(key);
     }
 
@@ -149,6 +154,7 @@ public class Server {
      */
 
     private String processPutRequest(Request req) {
+        System.out.println(Arrays.toString(req.splat()));
         String key = req.splat()[0];
         String value = req.splat()[1];
         Timestamp ts = new Timestamp(req.splat()[2]);
@@ -162,7 +168,7 @@ public class Server {
 
         Item d = new Item(key, value, versionVector[this.replicaId], this.replicaId);
         addVersion(d);
-//        broadcastReplicateRequest(d);
+        broadcastReplicateRequest(d);
         return constructSuccessfulPutResponse(versionVector[this.replicaId]);
     }
 
@@ -237,6 +243,7 @@ public class Server {
      */
 
     private String processReplicateRequest(Request req) {
+        this.logger.logPrint("Processing Replicate Request");
         int replicaReceivedFrom = Integer.parseInt(req.splat()[0]);
         Item d = new Item(req.splat()[1]);
 
@@ -260,7 +267,7 @@ public class Server {
         int numReplicas = Integer.parseInt(args[2]); // number of total replicas or data centers
 
 //        int partitionId = 4; // the partition id that this server represents
-//        int replicaId = 1; // the replica id that this server is part of and responds to
+//        int replicaId = 2; // the replica id that this server is part of and responds to
 //        int numReplicas = 5; // number of total replicas or data centers
         new Server(partitionId, replicaId, numReplicas);
     }

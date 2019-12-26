@@ -26,7 +26,8 @@ public class ClientHandler {
      */
 
     private int calculatePortToForward(String key) {
-        int partitionToForward = key.hashCode() % numPartitions;
+        int partitionToForward = Math.abs(key.hashCode()) % numPartitions;
+        System.out.println("Forwarding to replica " + replicaId + " and partition " + partitionToForward);
         return ClientConstants.SERVER_BASE_PORT * replicaId + partitionToForward;
     }
 
@@ -65,6 +66,7 @@ public class ClientHandler {
                 .routeParam("timestamp", timestamp)
                 .asString();
 
+        System.out.println("Sending PUT req with " + key + " " + value + " " + timestamp);
         return response.getBody();
     }
 

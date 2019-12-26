@@ -54,6 +54,11 @@ public class Client extends Thread {
         String clientHandlerMsg = createGetReqMessage(key); // create a get request message involving the key
 
         String response = fetchResultFromClientHandler(clientHandlerMsg); // return the result of the GET request
+
+        if (response.equals(ResponseEnum.NOT_FOUND.toString())) {
+            return new Gson().toJson(new Object());
+        }
+
         GetReply reply = new Gson().fromJson(response, GetReply.class);
 
         if (this.dependencyTime.compareTo(reply.getUpdateTime()) < 0) {
@@ -64,6 +69,7 @@ public class Client extends Thread {
             this.globalStableTime = reply.getGlobalStableTime();
         }
 
+        System.out.println("GST: " + this.globalStableTime.toString());
         return response;
     }
 
