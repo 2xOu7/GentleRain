@@ -54,6 +54,10 @@ public class Server {
         int portToBind = ServerConstants.BASE_PORT * replicaId + partitionId;
         port(portToBind);
         declareRoutes();
+
+        /**
+         * Start GST Aggregator Service Here
+         */
     }
 
     /**
