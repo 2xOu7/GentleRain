@@ -24,12 +24,12 @@ public class Server {
     private Timestamp localStableTime; // local stable time of the server
     private Timestamp[] versionVector; // version vector
     private Map<String, List<Item>> versionChain; // version chain
-    private int replicaId; // replica id
-    private int partitionId;
-    private int numReplicas;
-    private Logger logger;
-    private ReentrantLock gstLock = new ReentrantLock(true);
-    private ReentrantLock vvLock = new ReentrantLock(true);
+    private int replicaId; // replica id that this server belongs to
+    private int partitionId; // partition id of the server
+    private int numReplicas; // total number of replicas
+    private Logger logger; // logger for debug
+    private ReentrantLock gstLock = new ReentrantLock(true); // lock to ensure atomicity
+    private ReentrantLock vvLock = new ReentrantLock(true); // lock to ensure atomicity
 
     public Server(int partitionId, int replicaId, int numReplicas) {
         Timestamp now = new Timestamp(replicaId, partitionId);
@@ -270,6 +270,7 @@ public class Server {
      * @param req - the request
      * @return - the result of the request
      */
+
     private String processLSTAggregateRequest(Request req) {
         String payload = req.params(ServerConstants.PAYLOAD_PARAM);
         ServerContext.getGstAggregator().addMessage(payload);
@@ -277,13 +278,28 @@ public class Server {
         return ResponseEnum.RECEIVED.toString();
     }
 
+    /**
+     * Getter for replica Id
+     * @return - replica Id of the server
+     */
+
     public int getReplicaId() {
         return this.replicaId;
     }
 
+    /**
+     * Getter for replica Id
+     * @return - replica Id of the server
+     */
+
     public int getPartitionId() {
         return this.partitionId;
     }
+
+    /**
+     * Setter for GST
+     * @param globalStableTime - gst to set to
+     */
 
     public void setGlobalStableTime(Timestamp globalStableTime) {
         try {
@@ -294,6 +310,11 @@ public class Server {
             gstLock.unlock();
         }
     }
+
+    /**
+     * Getter for version vector
+     * @return - version vector of the server
+     */
 
     public Timestamp[] getVersionVector() {
         Timestamp[] vv;
@@ -308,6 +329,11 @@ public class Server {
 
         return vv;
     }
+
+    /**
+     * Getter for num replicas
+     * @return - num replicas of the server
+     */
 
     public int getNumReplicas() {
         return numReplicas;

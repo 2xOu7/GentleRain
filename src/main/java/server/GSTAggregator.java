@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * This thread will try to aggregate the minimum LST among its children nodes
+ * This service will try to aggregate the minimum LST among its children nodes
  * It will push the result to the parent node
  * When the parent node pushes the result back down, this thread will then update the GST of the server
  */
@@ -15,14 +15,14 @@ import java.util.Queue;
 public class GSTAggregator extends MessageBox {
 
     private Integer parent; // partitionId of parent
-    private Integer leftChild;
-    private Integer rightChild;
-    private Integer leftPort; // partitionId of left child
-    private Integer rightPort; // partitionId of right child
-    private Integer parentPort;
+    private Integer leftChild; // partitionId of left child
+    private Integer rightChild; // partitionId of right child
+    private Integer leftPort; // port of left child
+    private Integer rightPort; // port of right child
+    private Integer parentPort; // parent port
 
-    private Queue<Timestamp> leftQueue;
-    private Queue<Timestamp> rightQueue;
+    private Queue<Timestamp> leftQueue; // FIFO queue for messages from the left child
+    private Queue<Timestamp> rightQueue; // FIFO queue for messages from the right child
 
     private static boolean isValidChild(int id) {
         return id <= ServerContext.getServer().getNumReplicas();
@@ -56,6 +56,12 @@ public class GSTAggregator extends MessageBox {
         }
     }
 
+    /**
+     * Create payload for pushing up the tree
+     * @param ts - timestamp to push
+     * @return - payload for pushing up the tree
+     */
+
     private String createPayloadForPushUp(Timestamp ts) {
         String[] tokens = new String[3];
 
@@ -65,6 +71,12 @@ public class GSTAggregator extends MessageBox {
 
         return String.join(" ", tokens);
     }
+
+    /**
+     * Create payload for pushing down the tree
+     * @param ts - timestamp to push
+     * @return - payload for pushing down the tree
+     */
 
     private String createPayloadForPushDown(Timestamp ts){
         String[] tokens = new String[3];
@@ -256,6 +268,10 @@ public class GSTAggregator extends MessageBox {
                 break;
         }
     }
+
+    /**
+     * Execute the aggregation service
+     */
 
     public void run() {
 
