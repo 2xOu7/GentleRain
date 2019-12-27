@@ -42,16 +42,18 @@ public class Server {
 
         versionChain = new HashMap<>();
 
-        int portToBind = ServerConstants.BASE_PORT * replicaId + partitionId;
         this.replicaId = replicaId;
         this.partitionId = partitionId;
         this.numReplicas = numReplicas;
 
-        port(portToBind);
         this.logger = new Logger(this);
 
-        declareRoutes();
+    }
 
+    public void init() {
+        int portToBind = ServerConstants.BASE_PORT * replicaId + partitionId;
+        port(portToBind);
+        declareRoutes();
     }
 
     /**
@@ -315,7 +317,9 @@ public class Server {
 //        int partitionId = 4; // the partition id that this server represents
 //        int replicaId = 2; // the replica id that this server is part of and responds to
 //        int numReplicas = 5; // number of total replicas or data centers
-        ServerContext.setGstAggregator(new GSTAggregator());
         ServerContext.setServer(new Server(partitionId, replicaId, numReplicas));
+        ServerContext.setGstAggregator(new GSTAggregator());
+
+        ServerContext.getServer().init();
     }
 }

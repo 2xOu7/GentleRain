@@ -14,17 +14,15 @@ import java.sql.Time;
 
 public class GSTAggregator extends MessageBox {
 
-    public Server server; // server of this aggregator
-
     public Integer parent; // partitionId of parent
     public Integer leftChild; // partitionId of left child
     public Integer rightChild; // partitionId of right child
 
-    private boolean isValidChild(int id) {
-        return id <= server.getNumReplicas();
+    private static boolean isValidChild(int id) {
+        return id <= ServerContext.getServer().getNumReplicas();
     }
 
-    private boolean isValidParent(int id) {
+    private static boolean isValidParent(int id) {
         return id > 0;
     }
 
@@ -53,7 +51,7 @@ public class GSTAggregator extends MessageBox {
      */
 
     private void pushMessage(String msg) {
-        int portToForward = ServerConstants.BASE_PORT * this.server.getReplicaId() + this.parent;
+        int portToForward = ServerConstants.BASE_PORT * ServerContext.getServer().getReplicaId() + this.parent;
     }
 
     /**
@@ -74,7 +72,7 @@ public class GSTAggregator extends MessageBox {
 
             case GLOBAL_MIN_LST: // this is the time that is pushed down - we set this server's GST to this value
                 Timestamp currTs = new Timestamp(tokens[2]);
-                this.server.setGlobalStableTime(currTs);
+                ServerContext.getServer().setGlobalStableTime(currTs);
                 break;
         }
     }
