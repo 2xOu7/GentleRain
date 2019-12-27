@@ -62,6 +62,7 @@ public class Server {
         get(ServerConstants.SERVER_GET_PATH, this::processGetRequest);
         put(ServerConstants.SERVER_PUT_PATH, (req, res) -> this.processPutRequest(req));
         put(ServerConstants.SERVER_REPLICATE_PATH, (req, res) -> this.processReplicateRequest(req));
+        put(ServerConstants.SERVER_LST_AGGREGATE_PATH, (req, res) -> this.processLSTAggregateRequest(req));
     }
 
     /**
@@ -256,6 +257,15 @@ public class Server {
         this.versionVector[replicaReceivedFrom] = d.getUpdateTime();
 
         return ResponseEnum.RECEIVED.toString();
+    }
+
+    /**
+     * Processes LST Aggregate Request
+     * @param req - the request
+     * @return - the result of the request
+     */
+    private String processLSTAggregateRequest(Request req) {
+        return "";
     }
 
     public int getReplicaId() {
