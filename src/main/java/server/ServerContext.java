@@ -3,11 +3,12 @@ package server;
 /**
  * Runtime context for the server class
  */
+
 public class ServerContext {
 
-    private static Server server;
+    private static Server server; // the current server instance
 
-    private static GSTAggregator gstAggregator;
+    private static GSTAggregator gstAggregator; // the current GST Aggregator instance
 
     public static GSTAggregator getGstAggregator() {
         return gstAggregator;
