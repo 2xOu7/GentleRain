@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * This service will try to aggregate the minimum LST among its children nodes
+ * This service will aggregate the minimum LST among its children nodes
  * It will push the result to the parent node
  * When the parent node pushes the result back down, this thread will then update the GST of the server
  */
@@ -89,10 +89,30 @@ public class GSTAggregator extends MessageBox {
     }
 
     /**
+     * Returns the min timestamp in the version vector
+     * @return - the minimum VV timestamp
+     */
+
+    private Timestamp getMinVVTimestamp() {
+        Timestamp[] currVV = ServerContext.getServer().getVersionVector();
+        Timestamp currMin = currVV[0];
+
+        for (int i = 1; i < currVV.length; i++) {
+            if (currMin.compareTo(currVV[i]) > 0) {
+                currMin = currVV[i];
+            }
+        }
+
+        return currMin;
+    }
+    /**
      * Pushes an aggregation up the tree
      */
 
     private void pushUp() {
+        assert(this.parentPort != null);
+        Timestamp myMin = this.getMinVVTimestamp();
+
         if (leftQueue != null && rightQueue != null) {
 
             if (leftQueue.size() > 0 && rightQueue.size() > 0) {
@@ -100,36 +120,40 @@ public class GSTAggregator extends MessageBox {
                 Timestamp leftLST = leftQueue.poll();
                 Timestamp rightLST = rightQueue.poll();
                 Timestamp minLST = (leftLST.compareTo(rightLST) <= 0) ? leftLST : rightLST;
-
                 assert minLST != null;
+                Timestamp trueMinLST = (minLST.compareTo(myMin) <= 0) ? minLST : myMin;
 
                 Unirest.put("http://localhost:{port}/aggregate/{payload}")
                         .routeParam("port", this.parentPort.toString())
-                        .routeParam("payload", createPayloadForPushUp(minLST))
+                        .routeParam("payload", createPayloadForPushUp(trueMinLST))
                         .asString();
                 return;
             }
         }
 
         if (leftQueue != null) {
-            Timestamp leftLST = leftQueue.poll();
 
+            Timestamp leftLST = leftQueue.poll();
             assert leftLST != null;
+            Timestamp trueMinLST = (leftLST.compareTo(myMin) <= 0) ? leftLST : myMin;
+
             Unirest.put("http://localhost:{port}/aggregate/{payload}")
                     .routeParam("port", this.parentPort.toString())
-                    .routeParam("payload", createPayloadForPushUp(leftLST))
+                    .routeParam("payload", createPayloadForPushUp(trueMinLST))
                     .asString();
 
             return;
         }
 
         if (rightQueue != null) {
-            Timestamp rightLST = rightQueue.poll();
 
+            Timestamp rightLST = rightQueue.poll();
             assert rightLST != null;
+            Timestamp trueMinLST = (rightLST.compareTo(myMin) <= 0) ? rightLST : myMin;
+
             Unirest.put("http://localhost:{port}/aggregate/{payload}")
                     .routeParam("port", this.parentPort.toString())
-                    .routeParam("payload", createPayloadForPushUp(rightLST))
+                    .routeParam("payload", createPayloadForPushUp(trueMinLST))
                     .asString();
 
         }
@@ -140,6 +164,9 @@ public class GSTAggregator extends MessageBox {
      */
 
     private void pushDown() {
+        assert(this.parentPort == null);
+        Timestamp myMin = this.getMinVVTimestamp();
+
         if (leftQueue != null && rightQueue != null) {
 
             if (leftQueue.size() > 0 && rightQueue.size() > 0) {
@@ -147,48 +174,47 @@ public class GSTAggregator extends MessageBox {
                 Timestamp leftLST = leftQueue.poll();
                 Timestamp rightLST = rightQueue.poll();
                 Timestamp minLST = (leftLST.compareTo(rightLST) <= 0) ? leftLST : rightLST;
-
                 assert minLST != null;
+                Timestamp trueMinLST = (minLST.compareTo(myMin) <= 0) ? minLST : myMin;
 
-                if (this.leftPort != null) {
+                Unirest.put("http://localhost:{port}/aggregate/{payload}")
+                        .routeParam("port", Integer.toString(leftPort))
+                        .routeParam("payload", createPayloadForPushDown(trueMinLST))
+                        .asString();
 
-                    Unirest.put("http://localhost:{port}/aggregate/{payload}")
-                            .routeParam("port", Integer.toString(leftPort))
-                            .routeParam("payload", createPayloadForPushDown(minLST))
-                            .asString();
-                }
+                Unirest.put("http://localhost:{port}/aggregate/{payload}")
+                        .routeParam("port", Integer.toString(rightPort))
+                        .routeParam("payload", createPayloadForPushDown(trueMinLST))
+                        .asString();
 
-                if (this.rightPort != null) {
-
-                    Unirest.put("http://localhost:{port}/aggregate/{payload}")
-                            .routeParam("port", Integer.toString(rightPort))
-                            .routeParam("payload", createPayloadForPushDown(minLST))
-                            .asString();
-                }
 
                 return;
             }
         }
 
         if (leftQueue != null) {
-            Timestamp leftLST = leftQueue.poll();
 
+            Timestamp leftLST = leftQueue.poll();
             assert leftLST != null;
+            Timestamp trueMinLST = (leftLST.compareTo(myMin) <= 0) ? leftLST : myMin;
+
             Unirest.put("http://localhost:{port}/aggregate/{payload}")
-                    .routeParam("port", this.parentPort.toString())
-                    .routeParam("payload", createPayloadForPushDown(leftLST))
+                    .routeParam("port", this.leftPort.toString())
+                    .routeParam("payload", createPayloadForPushDown(trueMinLST))
                     .asString();
 
             return;
         }
 
         if (rightQueue != null) {
-            Timestamp rightLST = rightQueue.poll();
 
+            Timestamp rightLST = rightQueue.poll();
             assert rightLST != null;
+            Timestamp trueMinLST = (rightLST.compareTo(myMin) <= 0) ? rightLST : myMin;
+
             Unirest.put("http://localhost:{port}/aggregate/{payload}")
-                    .routeParam("port", this.parentPort.toString())
-                    .routeParam("payload", createPayloadForPushDown(rightLST))
+                    .routeParam("port", this.rightPort.toString())
+                    .routeParam("payload", createPayloadForPushDown(trueMinLST))
                     .asString();
 
         }
@@ -231,7 +257,7 @@ public class GSTAggregator extends MessageBox {
         if (this.leftPort != null) {
 
             Unirest.put("http://localhost:{port}/aggregate/{payload}")
-                    .routeParam("port", Integer.toString(leftPort))
+                    .routeParam("port", this.leftPort.toString())
                     .routeParam("payload", payload)
                     .asString();
         }
@@ -239,7 +265,7 @@ public class GSTAggregator extends MessageBox {
         if (this.rightPort != null) {
 
             Unirest.put("http://localhost:{port}/aggregate/{payload}")
-                    .routeParam("port", Integer.toString(rightPort))
+                    .routeParam("port", this.rightPort.toString())
                     .routeParam("payload", payload)
                     .asString();
         }

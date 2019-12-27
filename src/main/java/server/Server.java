@@ -173,15 +173,17 @@ public class Server {
 
         long clockTime = waitUntil(ts);
 
-        versionVector[this.replicaId] = new Timestamp()
+        Timestamp newTS = new Timestamp()
                 .timestamp(clockTime)
                 .replicaId(this.replicaId)
                 .partitionId(this.partitionId);
 
-        Item d = new Item(key, value, versionVector[this.replicaId], this.replicaId);
+        this.setVersionVector(this.replicaId, newTS);
+
+        Item d = new Item(key, value, newTS, this.replicaId);
         addVersion(d);
         broadcastReplicateRequest(d);
-        return constructSuccessfulPutResponse(versionVector[this.replicaId]);
+        return constructSuccessfulPutResponse(newTS);
     }
 
     /**
@@ -260,7 +262,7 @@ public class Server {
         Item d = new Item(req.splat()[1]);
 
         addVersion(d);
-        this.versionVector[replicaReceivedFrom] = d.getUpdateTime();
+        this.setVersionVector(replicaReceivedFrom, d.getUpdateTime());
 
         return ResponseEnum.RECEIVED.toString();
     }
@@ -330,6 +332,21 @@ public class Server {
         return vv;
     }
 
+    /**
+     * Atomically sets an index of the version vector
+     * @param i - index to set
+     * @param ts - timestamp to set
+     */
+
+    public void setVersionVector(int i, Timestamp ts) {
+        try {
+            vvLock.lock();
+            this.versionVector[i] = ts;
+
+        } finally {
+            vvLock.unlock();
+        }
+    }
     /**
      * Getter for num replicas
      * @return - num replicas of the server
