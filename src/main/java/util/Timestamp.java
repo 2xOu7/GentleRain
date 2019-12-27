@@ -71,9 +71,6 @@ public class Timestamp implements Comparable<Timestamp> {
 
     @Override
     public int compareTo(Timestamp o) {
-        if (o == null) {
-            return 1;
-        }
 
         if (this.clockTime < o.clockTime) {
             return -1;

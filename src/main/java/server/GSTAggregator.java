@@ -97,6 +97,17 @@ public class GSTAggregator extends MessageBox {
         Timestamp currMin = currVV[0];
 
         for (int i = 1; i < currVV.length; i++) {
+            if (currMin == null) {
+                if (currVV[i] != null) {
+                    currMin = currVV[i];
+                }
+                continue;
+            }
+
+            if (currVV[i] == null) {
+                continue;
+            }
+
             if (currMin.compareTo(currVV[i]) > 0) {
                 currMin = currVV[i];
             }
