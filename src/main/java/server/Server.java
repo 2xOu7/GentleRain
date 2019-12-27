@@ -271,7 +271,7 @@ public class Server {
      * @return - the result of the request
      */
     private String processLSTAggregateRequest(Request req) {
-        String payload = req.params("payload");
+        String payload = req.params(ServerConstants.PAYLOAD_PARAM);
         ServerContext.getGstAggregator().addMessage(payload);
 
         return ResponseEnum.RECEIVED.toString();
