@@ -265,7 +265,10 @@ public class Server {
      * @return - the result of the request
      */
     private String processLSTAggregateRequest(Request req) {
-        return "";
+        String payload = req.params("payload");
+        ServerContext.getGstAggregator().addMessage(payload);
+
+        return ResponseEnum.RECEIVED.toString();
     }
 
     public int getReplicaId() {
@@ -312,6 +315,7 @@ public class Server {
 //        int partitionId = 4; // the partition id that this server represents
 //        int replicaId = 2; // the replica id that this server is part of and responds to
 //        int numReplicas = 5; // number of total replicas or data centers
-        new Server(partitionId, replicaId, numReplicas);
+        ServerContext.setGstAggregator(new GSTAggregator());
+        ServerContext.setServer(new Server(partitionId, replicaId, numReplicas));
     }
 }

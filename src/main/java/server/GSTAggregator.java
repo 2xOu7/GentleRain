@@ -28,10 +28,8 @@ public class GSTAggregator extends MessageBox {
         return id > 0;
     }
 
-    public GSTAggregator(Server server) {
-        this.server = server;
-
-        int currId = server.getPartitionId();
+    public GSTAggregator() {
+        int currId = ServerContext.getServer().getPartitionId();
         int leftId = 2 * currId;
         int rightId = 2 * currId + 1;
         int parentId = currId / 2;
