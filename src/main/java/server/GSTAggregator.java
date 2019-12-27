@@ -14,7 +14,6 @@ import java.util.Queue;
 
 public class GSTAggregator extends MessageBox {
 
-    private Integer parent; // partitionId of parent
     private Integer leftChild; // partitionId of left child
     private Integer rightChild; // partitionId of right child
     private Integer leftPort; // port of left child
@@ -51,8 +50,8 @@ public class GSTAggregator extends MessageBox {
         }
 
         if (isValidParent(parentId)){
-            this.parent = parentId;
-            this.parentPort = ServerConstants.BASE_PORT * ServerContext.getServer().getReplicaId() + this.parent;
+            // partitionId of parent
+            this.parentPort = ServerConstants.BASE_PORT * ServerContext.getServer().getReplicaId() + parentId;
         }
     }
 
