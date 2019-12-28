@@ -337,6 +337,7 @@ public class GSTAggregator extends MessageBox {
 
     public void run() {
         waitForStart();
+        ServerContext.getServer().getLogger().logPrint("GST Aggregator is now beginning");
 
         while (true) {
             String msg = this.pollMessage();

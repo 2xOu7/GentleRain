@@ -358,6 +358,10 @@ public class Server {
         return numReplicas;
     }
 
+    public Logger getLogger() {
+        return logger;
+    }
+
     public static void main(String[] args) {
         int partitionId = Integer.parseInt(args[0]); // the partition id that this server represents
         int replicaId = Integer.parseInt(args[1]); // the replica id that this server is part of and responds to
