@@ -19,7 +19,7 @@ public class GSTAggregator extends MessageBox {
     private Integer leftPort; // port of left child
     private Integer rightPort; // port of right child
     private Integer parentPort; // parent port
-
+    private int startupTime;
     private Queue<Timestamp> leftQueue; // FIFO queue for messages from the left child
     private Queue<Timestamp> rightQueue; // FIFO queue for messages from the right child
 
@@ -44,6 +44,7 @@ public class GSTAggregator extends MessageBox {
     }
 
      GSTAggregator() {
+        this.startupTime = 10000;
         int currId = ServerContext.getServer().getPartitionId();
         int leftId = 2 * currId;
         int rightId = 2 * currId + 1;
@@ -324,7 +325,7 @@ public class GSTAggregator extends MessageBox {
 
     private void waitForStart() {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(this.startupTime);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
