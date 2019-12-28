@@ -23,15 +23,27 @@ public class GSTAggregator extends MessageBox {
     private Queue<Timestamp> leftQueue; // FIFO queue for messages from the left child
     private Queue<Timestamp> rightQueue; // FIFO queue for messages from the right child
 
+    /**
+     * Returns whether this server id exists in the current setup as a child
+     * @param id
+     * @return
+     */
+
     private static boolean isValidChild(int id) {
         return id <= ServerContext.getServer().getNumReplicas();
     }
+
+    /**public
+     * Returns whether this server id exists in the current setup as a parent
+     * @param id
+     * @return
+     */
 
     private static boolean isValidParent(int id) {
         return id > 0;
     }
 
-    public GSTAggregator() {
+     GSTAggregator() {
         int currId = ServerContext.getServer().getPartitionId();
         int leftId = 2 * currId;
         int rightId = 2 * currId + 1;
@@ -129,14 +141,15 @@ public class GSTAggregator extends MessageBox {
 
                 Timestamp leftLST = leftQueue.poll();
                 Timestamp rightLST = rightQueue.poll();
+                assert rightLST != null;
                 Timestamp minLST = (leftLST.compareTo(rightLST) <= 0) ? leftLST : rightLST;
-                assert minLST != null;
                 Timestamp trueMinLST = (minLST.compareTo(myMin) <= 0) ? minLST : myMin;
 
                 Unirest.put("http://localhost:{port}/aggregate/{payload}")
                         .routeParam("port", this.parentPort.toString())
                         .routeParam("payload", createPayloadForPushUp(trueMinLST))
                         .asString();
+
                 return;
             }
         }
@@ -183,8 +196,8 @@ public class GSTAggregator extends MessageBox {
 
                 Timestamp leftLST = leftQueue.poll();
                 Timestamp rightLST = rightQueue.poll();
+                assert rightLST != null;
                 Timestamp minLST = (leftLST.compareTo(rightLST) <= 0) ? leftLST : rightLST;
-                assert minLST != null;
                 Timestamp trueMinLST = (minLST.compareTo(myMin) <= 0) ? minLST : myMin;
 
                 Unirest.put("http://localhost:{port}/aggregate/{payload}")

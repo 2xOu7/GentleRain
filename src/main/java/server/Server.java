@@ -56,8 +56,10 @@ public class Server {
         declareRoutes();
 
         /**
-         * Start GST Aggregator Service Here
+         * Start GST Aggregator Service
          */
+
+        ServerContext.getGstAggregator().start();
     }
 
     /**
