@@ -330,6 +330,7 @@ public class GSTAggregator extends MessageBox {
             e.printStackTrace();
         }
     }
+
     /**
      * Execute the aggregation service
      */
