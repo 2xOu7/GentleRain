@@ -25,8 +25,8 @@ public class GSTAggregator extends MessageBox {
 
     /**
      * Returns whether this server id exists in the current setup as a child
-     * @param id
-     * @return
+     * @param id - the server id to check
+     * @return - whether this id is valid
      */
 
     private static boolean isValidChild(int id) {
@@ -35,8 +35,8 @@ public class GSTAggregator extends MessageBox {
 
     /**public
      * Returns whether this server id exists in the current setup as a parent
-     * @param id
-     * @return
+     * @param id - the server id to check
+     * @return - whether this id is valid
      */
 
     private static boolean isValidParent(int id) {
@@ -319,10 +319,22 @@ public class GSTAggregator extends MessageBox {
     }
 
     /**
+     * Sleeps 10 seconds before truly starting
+     */
+
+    private void waitForStart() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
      * Execute the aggregation service
      */
 
     public void run() {
+        waitForStart();
 
         while (true) {
             String msg = this.pollMessage();
