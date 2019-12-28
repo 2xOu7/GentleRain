@@ -314,6 +314,7 @@ public class GSTAggregator extends MessageBox {
             case GLOBAL_MIN_LST: // this is the time that is pushed down - we set this server's GST to this value
                 Timestamp currTS = new Timestamp(tokens[2]);
                 ServerContext.getServer().setGlobalStableTime(currTS);
+                ServerContext.getServer().getLogger().logPrint("Changed GST to " + currTS);
                 forwardDown(msg);
                 break;
         }
