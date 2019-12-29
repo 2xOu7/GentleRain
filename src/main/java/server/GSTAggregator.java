@@ -268,7 +268,7 @@ public class GSTAggregator extends MessageBox {
             debug("" + this.parentPort);
             Unirest.put("http://localhost:{port}/aggregate/{payload}")
                     .routeParam("port", this.parentPort.toString())
-                    .routeParam("payload", lst.toString())
+                    .routeParam("payload", createPayloadForPushUp(lst))
                     .asString();
 
             return;
