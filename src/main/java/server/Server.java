@@ -208,20 +208,29 @@ public class Server {
             }
 
             int port = ServerConstants.BASE_PORT * i + this.partitionId;
-
-            try {
-                Unirest.put("http://localhost:{port}/replicate/{id}/{item}")
-                        .routeParam("port", Integer.toString(port))
-                        .routeParam("id", Integer.toString(this.replicaId))
-                        .routeParam("item", d.toString())
-                        .asString();
-
-            } catch (kong.unirest.UnirestException ke) {
-//                ke.printStackTrace();
-            }
+            sendReplicateReq(port, d);
         }
     }
 
+    /**
+     * Sends a replicate request over HTTP to the given port with the given item
+     * @param port - port to send to
+     * @param d - item to send
+     */
+
+    private void sendReplicateReq(int port, Item d) {
+
+        try {
+            Unirest.put("http://localhost:{port}/replicate/{id}/{item}")
+                    .routeParam("port", Integer.toString(port))
+                    .routeParam("id", Integer.toString(this.replicaId))
+                    .routeParam("item", d.toString())
+                    .asString();
+
+        } catch (kong.unirest.UnirestException ke) {
+//                ke.printStackTrace();
+        }
+    }
     /**
      * Constructs a successful PUT response
      * @param ts - timestamp to be used in response
