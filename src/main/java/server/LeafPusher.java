@@ -34,8 +34,9 @@ public class LeafPusher extends Thread {
 
     public void startNextSession() {
         ServerContext.getServer().getLogger().logPrint("Starting next session");
+
         try {
-            Thread.sleep(3000);
+            Thread.sleep(7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
