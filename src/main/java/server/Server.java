@@ -151,7 +151,7 @@ public class Server {
             globalStableTime = time;
         }
 
-        System.out.println("GST: " + globalStableTime.toString());
+        this.logger.logPrint("GST: " + globalStableTime.toString());
         return this.getLatestVersion(key);
     }
 
@@ -174,7 +174,7 @@ public class Server {
      */
 
     private String processPutRequest(Request req) {
-        System.out.println(Arrays.toString(req.splat()));
+        this.logger.logPrint(Arrays.toString(req.splat()));
         String key = req.splat()[0];
         String value = req.splat()[1];
         Timestamp ts = new Timestamp(req.splat()[2]);
