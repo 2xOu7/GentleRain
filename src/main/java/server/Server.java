@@ -27,11 +27,12 @@ public class Server {
     private int replicaId; // replica id that this server belongs to
     private int partitionId; // partition id of the server
     private int numReplicas; // total number of replicas
+    private int numPartitions; // total number of partitions per data center
     private Logger logger; // logger for debug
     private ReentrantLock gstLock = new ReentrantLock(true); // lock to ensure atomicity
     private ReentrantLock vvLock = new ReentrantLock(true); // lock to ensure atomicity
 
-    public Server(int partitionId, int replicaId, int numReplicas) {
+    public Server(int partitionId, int replicaId, int numReplicas, int numPartitions) {
         Timestamp now = new Timestamp(replicaId, partitionId);
 
         localStableTime = now;
@@ -45,7 +46,7 @@ public class Server {
         this.replicaId = replicaId;
         this.partitionId = partitionId;
         this.numReplicas = numReplicas;
-
+        this.numPartitions = numPartitions;
         this.logger = new Logger(this);
 
     }
@@ -371,6 +372,7 @@ public class Server {
         int partitionId = Integer.parseInt(args[0]); // the partition id that this server represents
         int replicaId = Integer.parseInt(args[1]); // the replica id that this server is part of and responds to
         int numReplicas = Integer.parseInt(args[2]); // number of total replicas or data centers
+        int numPartitions = Integer.parseInt(args[3]); // number of partitions per data center
 
 //        int partitionId = 4; // the partition id that this server represents
 //        int replicaId = 2; // the replica id that this server is part of and responds to
@@ -380,7 +382,7 @@ public class Server {
          * Stage the context for the remainder of this process's lifespan
          */
 
-        ServerContext.setServer(new Server(partitionId, replicaId, numReplicas));
+        ServerContext.setServer(new Server(partitionId, replicaId, numReplicas, numPartitions));
         ServerContext.setGstAggregator(new GSTAggregator());
 
         /**
@@ -388,5 +390,9 @@ public class Server {
          */
 
         ServerContext.getServer().init();
+    }
+
+    public int getNumPartitions() {
+        return numPartitions;
     }
 }

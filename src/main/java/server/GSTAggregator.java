@@ -41,7 +41,7 @@ public class GSTAggregator extends MessageBox {
      */
 
     private static boolean isValidParent(int id) {
-        return id >= 0;
+        return id > 0;
     }
 
      GSTAggregator() {
@@ -50,6 +50,8 @@ public class GSTAggregator extends MessageBox {
         int leftId = 2 * currId;
         int rightId = 2 * currId + 1;
         int parentId = currId / 2;
+        debug("left child: " + leftId);
+        debug("num replicas: " + ServerContext.getServer().getNumPartitions());
 
         if (isValidChild(leftId)) {
             this.leftChild = leftId;
@@ -259,6 +261,8 @@ public class GSTAggregator extends MessageBox {
 
         int id = Integer.parseInt(tokens[1]);
         Timestamp lst = new Timestamp(tokens[2]);
+
+        debug("Is Leaf: " + this.isLeaf);
 
         if (this.isLeaf) {
             debug("" + this.parentPort);
