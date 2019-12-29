@@ -1,7 +1,6 @@
 package server;
 
 import util.Timestamp;
-
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -26,13 +25,12 @@ public class LeafPusher extends Thread {
 
         try {
             Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        try {
             this.msgLock.lock();
             this.roundInSession = false;
             this.waitForNextRound.signal();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
 
         } finally {
             this.msgLock.unlock();
