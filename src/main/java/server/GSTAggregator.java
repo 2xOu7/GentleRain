@@ -321,7 +321,7 @@ public class GSTAggregator extends MessageBox {
 
     private void processMessage(String msg) {
 
-        String[] tokens = msg.split("+");
+        String[] tokens = msg.split("\\+");
         AggregationEnum messageType = AggregationEnum.valueOf(tokens[0]);
 
         switch (messageType) {
