@@ -88,7 +88,7 @@ public class GSTAggregator extends MessageBox {
         tokens[1] = Integer.toString(ServerContext.getServer().getPartitionId());
         tokens[2] = ts.toString();
 
-        return String.join(" ", tokens);
+        return String.join("+", tokens);
     }
 
     /**
@@ -104,7 +104,7 @@ public class GSTAggregator extends MessageBox {
         tokens[1] = Integer.toString(ServerContext.getServer().getPartitionId());
         tokens[2] = ts.toString();
 
-        return String.join(" ", tokens);
+        return String.join("+", tokens);
     }
 
     /**
@@ -262,10 +262,10 @@ public class GSTAggregator extends MessageBox {
         int id = Integer.parseInt(tokens[1]);
         Timestamp lst = new Timestamp(tokens[2]);
 
-        debug("Is Leaf: " + this.isLeaf);
-
         if (this.isLeaf) {
             debug("" + this.parentPort);
+            debug(createPayloadForPushUp(lst));
+
             Unirest.put("http://localhost:{port}/aggregate/{payload}")
                     .routeParam("port", this.parentPort.toString())
                     .routeParam("payload", createPayloadForPushUp(lst))
@@ -321,7 +321,7 @@ public class GSTAggregator extends MessageBox {
 
     private void processMessage(String msg) {
 
-        String[] tokens = msg.split(" ");
+        String[] tokens = msg.split("+");
         AggregationEnum messageType = AggregationEnum.valueOf(tokens[0]);
 
         switch (messageType) {
