@@ -31,7 +31,7 @@ public class GSTAggregator extends MessageBox {
      */
 
     private static boolean isValidChild(int id) {
-        return id <= ServerContext.getServer().getNumReplicas();
+        return id <= ServerContext.getServer().getNumPartitions();
     }
 
     /**public

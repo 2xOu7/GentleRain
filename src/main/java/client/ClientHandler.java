@@ -26,7 +26,7 @@ public class ClientHandler {
      */
 
     private int calculatePortToForward(String key) {
-        int partitionToForward = Math.abs(key.hashCode()) % numPartitions;
+        int partitionToForward = (Math.abs(key.hashCode()) % numPartitions) + 1;
         System.out.println("Forwarding to replica " + replicaId + " and partition " + partitionToForward);
         return ClientConstants.SERVER_BASE_PORT * replicaId + partitionToForward;
     }

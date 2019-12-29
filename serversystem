@@ -1,0 +1,12 @@
+# $1 = number of partitions per data center
+# $2 = number of total data centers
+
+for (( i = 1; i <= $2; i++ ))      ### For each data center
+do
+
+    for (( j = 1 ; j <= $1; j++ )) ### For each partition
+    do
+          ttab ./server $j $i $2 $1
+    done
+
+done
