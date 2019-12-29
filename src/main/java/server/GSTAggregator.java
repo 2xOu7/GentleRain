@@ -41,7 +41,7 @@ public class GSTAggregator extends MessageBox {
      */
 
     private static boolean isValidParent(int id) {
-        return id > 0;
+        return id >= 0;
     }
 
      GSTAggregator() {
@@ -260,6 +260,16 @@ public class GSTAggregator extends MessageBox {
         int id = Integer.parseInt(tokens[1]);
         Timestamp lst = new Timestamp(tokens[2]);
 
+        if (this.isLeaf) {
+            debug("" + this.parentPort);
+            Unirest.put("http://localhost:{port}/aggregate/{payload}")
+                    .routeParam("port", this.parentPort.toString())
+                    .routeParam("payload", lst.toString())
+                    .asString();
+
+            return;
+        }
+
         if (leftChild != null && id == leftChild) {
             leftQueue.add(lst);
         }
@@ -319,7 +329,7 @@ public class GSTAggregator extends MessageBox {
             case GLOBAL_MIN_LST: // this is the time that is pushed down - we set this server's GST to this value
                 Timestamp currTS = new Timestamp(tokens[2]);
                 ServerContext.getServer().setGlobalStableTime(currTS);
-                ServerContext.getServer().getLogger().logPrint("Changed GST to " + currTS);
+                debug("Changed GST to " + currTS);
                 forwardDown(msg);
                 break;
         }
@@ -341,16 +351,21 @@ public class GSTAggregator extends MessageBox {
         return isLeaf;
     }
 
+    private void debug(String s) {
+        ServerContext.getServer().getLogger().logPrint(s);
+    }
+
     /**
      * Execute the aggregation service
      */
 
     public void run() {
         waitForStart();
-        ServerContext.getServer().getLogger().logPrint("GST Aggregator is now beginning");
+        debug("GST Aggregator is now beginning");
 
         while (true) {
             String msg = this.pollMessage();
+            debug("Polling message of: " + msg);
             processMessage(msg);
         }
     }
