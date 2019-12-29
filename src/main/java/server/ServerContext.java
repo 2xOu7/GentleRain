@@ -2,6 +2,7 @@ package server;
 
 /**
  * Runtime context for the server class
+ * Includes all of the relevant objects - getters + setters
  */
 
 public class ServerContext {
