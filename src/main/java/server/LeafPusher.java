@@ -16,17 +16,6 @@ public class LeafPusher extends Thread {
     private boolean roundInSession = false;
 
     private GSTAggregator currGSTAggregator;
-    /**
-     * Stops the thread for 10 seconds before restarting next round
-     */
-
-    public void waitForNextRound() {
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Starts the next session
@@ -48,8 +37,8 @@ public class LeafPusher extends Thread {
         } finally {
             this.msgLock.unlock();
         }
-
     }
+
     private void pushMinLST() {
         try {
             this.msgLock.lock();
@@ -70,6 +59,7 @@ public class LeafPusher extends Thread {
             this.msgLock.unlock();
         }
     }
+
     @Override
     public void run() {
         this.currGSTAggregator = ServerContext.getGstAggregator();
