@@ -263,8 +263,6 @@ public class GSTAggregator extends MessageBox {
         Timestamp lst = new Timestamp(tokens[2]);
 
         if (this.isLeaf) {
-            debug("" + this.parentPort);
-            debug(createPayloadForPushUp(lst));
 
             Unirest.put("http://localhost:{port}/aggregate/{payload}")
                     .routeParam("port", this.parentPort.toString())
