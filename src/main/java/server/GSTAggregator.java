@@ -179,8 +179,9 @@ public class GSTAggregator extends MessageBox {
                 Timestamp trueMinLST = (minLST.compareTo(myMin) <= 0) ? minLST : myMin;
 
                 this.sendMsg(this.parentPort, createPayloadForPushUp(trueMinLST));
-                return;
             }
+
+            return;
         }
 
         if (leftQueue != null) {
@@ -225,8 +226,8 @@ public class GSTAggregator extends MessageBox {
                 this.sendMsg(this.leftPort, this.createPayloadForPushDown(trueMinLST));
                 this.sendMsg(this.rightPort, this.createPayloadForPushDown(trueMinLST));
 
-                return;
             }
+            return;
         }
 
         if (leftQueue != null) {
