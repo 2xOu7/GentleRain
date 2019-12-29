@@ -222,7 +222,9 @@ public class GSTAggregator extends MessageBox {
                 assert rightLST != null;
                 Timestamp minLST = (leftLST.compareTo(rightLST) <= 0) ? leftLST : rightLST;
                 Timestamp trueMinLST = (minLST.compareTo(myMin) <= 0) ? minLST : myMin;
+
                 ServerContext.getServer().setGlobalStableTime(trueMinLST);
+                ServerContext.getServer().getLogger().logPrint("Changed GST: " + trueMinLST);
 
                 this.sendMsg(this.leftPort, this.createPayloadForPushDown(trueMinLST));
                 this.sendMsg(this.rightPort, this.createPayloadForPushDown(trueMinLST));
@@ -237,7 +239,9 @@ public class GSTAggregator extends MessageBox {
             Timestamp leftLST = leftQueue.poll();
             assert leftLST != null;
             Timestamp trueMinLST = (leftLST.compareTo(myMin) <= 0) ? leftLST : myMin;
+
             ServerContext.getServer().setGlobalStableTime(trueMinLST);
+            ServerContext.getServer().getLogger().logPrint("Changed GST: " + trueMinLST);
 
             this.sendMsg(this.leftPort, createPayloadForPushDown(trueMinLST));
             return;
@@ -249,7 +253,9 @@ public class GSTAggregator extends MessageBox {
             Timestamp rightLST = rightQueue.poll();
             assert rightLST != null;
             Timestamp trueMinLST = (rightLST.compareTo(myMin) <= 0) ? rightLST : myMin;
+
             ServerContext.getServer().setGlobalStableTime(trueMinLST);
+            ServerContext.getServer().getLogger().logPrint("Changed GST: " + trueMinLST);
 
             this.sendMsg(this.rightPort, createPayloadForPushDown(trueMinLST));
 
