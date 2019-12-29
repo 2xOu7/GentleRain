@@ -14,6 +14,8 @@ public class ServerContext {
         return gstAggregator;
     }
 
+    private static LeafPusher leafPusher;
+
     public static Server getServer() {
         return server;
     }
@@ -24,5 +26,13 @@ public class ServerContext {
 
     public static void setServer(Server server) {
         ServerContext.server = server;
+    }
+
+    public static void setLeafPusher(LeafPusher leafPusher) {
+        ServerContext.leafPusher = leafPusher;
+    }
+
+    public static LeafPusher getLeafPusher() {
+        return leafPusher;
     }
 }

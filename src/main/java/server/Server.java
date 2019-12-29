@@ -60,6 +60,11 @@ public class Server {
          */
 
         ServerContext.getGstAggregator().start();
+
+        if (ServerContext.getGstAggregator().isLeaf()) { // start up leaf pusher if this gst thread is a leaf
+            ServerContext.setLeafPusher(new LeafPusher());
+            ServerContext.getLeafPusher().start();
+        }
     }
 
     /**
@@ -371,8 +376,16 @@ public class Server {
 //        int replicaId = 2; // the replica id that this server is part of and responds to
 //        int numReplicas = 5; // number of total replicas or data center
 
+        /**
+         * Stage the context for the remainder of this process's lifespan
+         */
+
         ServerContext.setServer(new Server(partitionId, replicaId, numReplicas));
         ServerContext.setGstAggregator(new GSTAggregator());
+
+        /**
+         * Start the server
+         */
 
         ServerContext.getServer().init();
     }

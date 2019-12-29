@@ -22,6 +22,7 @@ public class GSTAggregator extends MessageBox {
     private int startupTime;
     private Queue<Timestamp> leftQueue; // FIFO queue for messages from the left child
     private Queue<Timestamp> rightQueue; // FIFO queue for messages from the right child
+    private boolean isLeaf;
 
     /**
      * Returns whether this server id exists in the current setup as a child
@@ -62,6 +63,10 @@ public class GSTAggregator extends MessageBox {
             this.rightQueue = new LinkedList<>();
         }
 
+        if (this.leftChild == null && this.rightChild == null) {
+            this.isLeaf = true;
+        }
+
         if (isValidParent(parentId)){
             // partitionId of parent
             this.parentPort = ServerConstants.BASE_PORT * ServerContext.getServer().getReplicaId() + parentId;
@@ -74,7 +79,7 @@ public class GSTAggregator extends MessageBox {
      * @return - payload for pushing up the tree
      */
 
-    private String createPayloadForPushUp(Timestamp ts) {
+    public String createPayloadForPushUp(Timestamp ts) {
         String[] tokens = new String[3];
 
         tokens[0] = AggregationEnum.LOCAL_MIN_LST.toString();
@@ -105,7 +110,7 @@ public class GSTAggregator extends MessageBox {
      * @return - the minimum VV timestamp
      */
 
-    private Timestamp getMinVVTimestamp() {
+    public Timestamp getMinVVTimestamp() {
         Timestamp[] currVV = ServerContext.getServer().getVersionVector();
         Timestamp currMin = currVV[0];
 
@@ -330,6 +335,10 @@ public class GSTAggregator extends MessageBox {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isLeaf() {
+        return isLeaf;
     }
 
     /**
