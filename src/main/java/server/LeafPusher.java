@@ -24,7 +24,7 @@ public class LeafPusher extends Thread {
         ServerContext.getServer().getLogger().logPrint("Starting next session");
 
         try {
-            Thread.sleep(7000);
+            Thread.sleep(7000); // just for testing right now
             this.msgLock.lock();
             this.roundInSession = false;
             this.waitForNextRound.signal();
