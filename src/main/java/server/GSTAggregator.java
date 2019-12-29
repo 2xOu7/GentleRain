@@ -226,6 +226,7 @@ public class GSTAggregator extends MessageBox {
                 this.sendMsg(this.leftPort, this.createPayloadForPushDown(trueMinLST));
                 this.sendMsg(this.rightPort, this.createPayloadForPushDown(trueMinLST));
 
+                debug("Pushed down messages");
             }
             return;
         }
@@ -298,6 +299,10 @@ public class GSTAggregator extends MessageBox {
         if (this.rightPort != null) {
             this.sendMsg(this.rightPort, payload);
         }
+
+        if (this.isLeaf) {
+            ServerContext.getLeafPusher().startNextSession();
+        }
     }
 
     /**
@@ -355,7 +360,6 @@ public class GSTAggregator extends MessageBox {
 
         while (true) {
             String msg = this.pollMessage();
-            debug("Polling message of: " + msg);
             processMessage(msg);
         }
     }
