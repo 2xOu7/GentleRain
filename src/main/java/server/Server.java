@@ -231,6 +231,7 @@ public class Server {
 //                ke.printStackTrace();
         }
     }
+
     /**
      * Constructs a successful PUT response
      * @param ts - timestamp to be used in response
@@ -280,7 +281,6 @@ public class Server {
 
         addVersion(d);
         this.setVersionVector(replicaReceivedFrom, d.getUpdateTime());
-        this.logger.logPrint("New VV timestamp: " + d.getUpdateTime());
         return ResponseEnum.RECEIVED.toString();
     }
 
