@@ -21,7 +21,6 @@ import static spark.Spark.*;
 public class Server {
 
     private Timestamp globalStableTime; // global stable time of the server
-    private Timestamp localStableTime; // local stable time of the server
     private Timestamp[] versionVector; // version vector
     private Map<String, List<Item>> versionChain; // version chain
     private int replicaId; // replica id that this server belongs to
@@ -35,7 +34,6 @@ public class Server {
     public Server(int partitionId, int replicaId, int numReplicas, int numPartitions) {
         Timestamp now = new Timestamp(replicaId, partitionId);
 
-        localStableTime = now;
         globalStableTime = now;
 
         versionVector = new Timestamp[numReplicas + 1];
@@ -363,14 +361,6 @@ public class Server {
         } finally {
             vvLock.unlock();
         }
-    }
-    /**
-     * Getter for num replicas
-     * @return - num replicas of the server
-     */
-
-    public int getNumReplicas() {
-        return numReplicas;
     }
 
     public Logger getLogger() {
