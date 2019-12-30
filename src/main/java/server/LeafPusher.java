@@ -21,10 +21,9 @@ public class LeafPusher extends Thread {
      */
 
     public void startNextSession() {
-        ServerContext.getServer().getLogger().logPrint("Starting next session");
 
         try {
-            Thread.sleep(7000); // just for testing right now
+            Thread.sleep(10000); // just for testing right now
             this.msgLock.lock();
             this.roundInSession = false;
             this.waitForNextRound.signal();
@@ -47,6 +46,7 @@ public class LeafPusher extends Thread {
 
             roundInSession = true;
             Timestamp minTS = this.currGSTAggregator.getMinVVTimestamp();
+            ServerContext.getServer().getLogger().logPrint("Min VV: " + minTS);
             String payload = this.currGSTAggregator.createPayloadForPushUp(minTS);
             this.currGSTAggregator.addMessage(payload);
 

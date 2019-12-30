@@ -3,6 +3,8 @@ package server;
 import kong.unirest.Unirest;
 import util.MessageBox;
 import util.Timestamp;
+
+import java.sql.Time;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -122,6 +124,7 @@ public class GSTAggregator extends MessageBox {
                 if (currVV[i] != null) {
                     currMin = currVV[i];
                 }
+
                 continue;
             }
 
@@ -210,8 +213,10 @@ public class GSTAggregator extends MessageBox {
      */
 
     private void pushDown() {
+        Timestamp oldTS = ServerContext.getServer().getGlobalStableTime();
         assert(this.parentPort == null);
         Timestamp myMin = this.getMinVVTimestamp();
+        debug("Curr VV Min: " + myMin);
 
         if (leftQueue != null && rightQueue != null) {
 
@@ -224,12 +229,13 @@ public class GSTAggregator extends MessageBox {
                 Timestamp trueMinLST = (minLST.compareTo(myMin) <= 0) ? minLST : myMin;
 
                 ServerContext.getServer().setGlobalStableTime(trueMinLST);
-                ServerContext.getServer().getLogger().logPrint("Changed GST: " + trueMinLST);
+                if (oldTS.compareTo(trueMinLST) != 0) {
+                    ServerContext.getServer().getLogger().logPrint("Changed GST: " + trueMinLST);
+                }
 
                 this.sendMsg(this.leftPort, this.createPayloadForPushDown(trueMinLST));
                 this.sendMsg(this.rightPort, this.createPayloadForPushDown(trueMinLST));
 
-                debug("Pushed down messages");
             }
             return;
         }
@@ -241,7 +247,9 @@ public class GSTAggregator extends MessageBox {
             Timestamp trueMinLST = (leftLST.compareTo(myMin) <= 0) ? leftLST : myMin;
 
             ServerContext.getServer().setGlobalStableTime(trueMinLST);
-            ServerContext.getServer().getLogger().logPrint("Changed GST: " + trueMinLST);
+            if (oldTS.compareTo(trueMinLST) != 0) {
+                ServerContext.getServer().getLogger().logPrint("Changed GST: " + trueMinLST);
+            }
 
             this.sendMsg(this.leftPort, createPayloadForPushDown(trueMinLST));
             return;
@@ -255,7 +263,9 @@ public class GSTAggregator extends MessageBox {
             Timestamp trueMinLST = (rightLST.compareTo(myMin) <= 0) ? rightLST : myMin;
 
             ServerContext.getServer().setGlobalStableTime(trueMinLST);
-            ServerContext.getServer().getLogger().logPrint("Changed GST: " + trueMinLST);
+            if (oldTS.compareTo(trueMinLST) != 0) {
+                ServerContext.getServer().getLogger().logPrint("Changed GST: " + trueMinLST);
+            }
 
             this.sendMsg(this.rightPort, createPayloadForPushDown(trueMinLST));
 
@@ -333,8 +343,13 @@ public class GSTAggregator extends MessageBox {
 
             case GLOBAL_MIN_LST: // this is the time that is pushed down - we set this server's GST to this value
                 Timestamp currTS = new Timestamp(tokens[2]);
+                Timestamp oldTS = ServerContext.getServer().getGlobalStableTime();
                 ServerContext.getServer().setGlobalStableTime(currTS);
-                debug("Changed GST to " + currTS);
+
+                if (oldTS.compareTo(currTS) != 0) {
+                    debug("Changed GST to " + currTS);
+                }
+
                 forwardDown(msg);
                 break;
         }

@@ -39,7 +39,7 @@ public class Server {
         globalStableTime = now;
 
         versionVector = new Timestamp[numReplicas + 1];
-        Arrays.fill(versionVector, now);
+        versionVector[replicaId] = now;
 
         versionChain = new HashMap<>();
 
@@ -174,7 +174,7 @@ public class Server {
      */
 
     private String processPutRequest(Request req) {
-        this.logger.logPrint(Arrays.toString(req.splat()));
+        this.logger.logPrint("Processing Put Request");
         String key = req.splat()[0];
         String value = req.splat()[1];
         Timestamp ts = new Timestamp(req.splat()[2]);
@@ -280,7 +280,7 @@ public class Server {
 
         addVersion(d);
         this.setVersionVector(replicaReceivedFrom, d.getUpdateTime());
-
+        this.logger.logPrint("New VV timestamp: " + d.getUpdateTime());
         return ResponseEnum.RECEIVED.toString();
     }
 
@@ -403,5 +403,9 @@ public class Server {
 
     public int getNumPartitions() {
         return numPartitions;
+    }
+
+    public Timestamp getGlobalStableTime() {
+        return globalStableTime;
     }
 }

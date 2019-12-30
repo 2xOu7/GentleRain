@@ -4,7 +4,7 @@ public class Logger {
 
     private Server server;
 
-    private static boolean toPrint = false;
+    private static boolean toPrint = true;
     public Logger(Server s) {
         this.server = s;
     }
