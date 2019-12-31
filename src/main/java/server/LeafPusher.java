@@ -46,7 +46,7 @@ public class LeafPusher extends Thread {
 
             roundInSession = true;
             Timestamp minTS = this.currGSTAggregator.getMinVVTimestamp();
-            ServerContext.getServer().getLogger().logPrint("Min VV: " + minTS);
+//            ServerContext.getServer().getLogger().logPrint("Min VV: " + minTS);
             String payload = this.currGSTAggregator.createPayloadForPushUp(minTS);
             this.currGSTAggregator.addMessage(payload);
 
