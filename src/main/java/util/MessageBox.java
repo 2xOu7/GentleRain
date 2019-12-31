@@ -22,7 +22,7 @@ public class MessageBox extends Thread {
     private Condition waitForMessage = messageLock.newCondition();
 
     /**
-     * Adds a message to message queue for this commander to process
+     * Adds a message to message queue for this worker to process
      * @param msg
      */
 
@@ -38,7 +38,7 @@ public class MessageBox extends Thread {
     }
 
     /**
-     * Polls the first message of this commander's message queue
+     * Polls the first message of this worker's message queue
      * @return
      */
 
