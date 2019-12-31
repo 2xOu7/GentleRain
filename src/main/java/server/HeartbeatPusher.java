@@ -97,7 +97,6 @@ public class HeartbeatPusher extends Thread {
             long delta = currTime - lastTime;
 
             if (isValidToChangeVV(currTime, delta)) {
-                ServerContext.getServer().getLogger().logPrint("Sending new heartbeat");
 
                 Timestamp newTS = new Timestamp()
                         .timestamp(currTime)
