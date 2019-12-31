@@ -55,7 +55,7 @@ public class Server {
         declareRoutes();
 
         /**
-         * Start GST Aggregator Service
+         * Start all service threads
          */
 
         ServerContext.getGstAggregator().start();
