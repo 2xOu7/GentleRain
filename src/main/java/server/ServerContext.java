@@ -17,6 +17,10 @@ public class ServerContext {
 
     private static LeafPusher leafPusher;
 
+    private static HeartbeatReceiver heartbeatReceiver;
+
+    private static HeartbeatPusher heartbeatPusher;
+
     public static Server getServer() {
         return server;
     }
@@ -35,5 +39,21 @@ public class ServerContext {
 
     public static LeafPusher getLeafPusher() {
         return leafPusher;
+    }
+
+    public static HeartbeatPusher getHeartbeatPusher() {
+        return heartbeatPusher;
+    }
+
+    public static HeartbeatReceiver getHeartbeatReceiver() {
+        return heartbeatReceiver;
+    }
+
+    public static void setHeartbeatPusher(HeartbeatPusher heartbeatPusher) {
+        ServerContext.heartbeatPusher = heartbeatPusher;
+    }
+
+    public static void setHeartbeatReceiver(HeartbeatReceiver heartbeatReceiver) {
+        ServerContext.heartbeatReceiver = heartbeatReceiver;
     }
 }

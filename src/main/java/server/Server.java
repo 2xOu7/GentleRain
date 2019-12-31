@@ -58,12 +58,15 @@ public class Server {
          * Start GST Aggregator Service
          */
 
-        ServerContext.getGstAggregator().start();
+//        ServerContext.getGstAggregator().start();
+//
+//        if (ServerContext.getGstAggregator().isLeaf()) { // start up leaf pusher if this gst thread is a leaf
+//            ServerContext.setLeafPusher(new LeafPusher());
+//            ServerContext.getLeafPusher().start();
+//        }
 
-        if (ServerContext.getGstAggregator().isLeaf()) { // start up leaf pusher if this gst thread is a leaf
-            ServerContext.setLeafPusher(new LeafPusher());
-            ServerContext.getLeafPusher().start();
-        }
+        ServerContext.getHeartbeatReceiver().start();
+        ServerContext.getHeartbeatPusher().start();
     }
 
     /**
@@ -75,6 +78,7 @@ public class Server {
         put(ServerConstants.SERVER_PUT_PATH, (req, res) -> this.processPutRequest(req));
         put(ServerConstants.SERVER_REPLICATE_PATH, (req, res) -> this.processReplicateRequest(req));
         put(ServerConstants.SERVER_LST_AGGREGATE_PATH, (req, res) -> this.processLSTAggregateRequest(req));
+        put(ServerConstants.SERVER_HEARTBEAT_PATH, (req, res) -> this.processHeartbeatRequest(req));
     }
 
     /**
@@ -385,6 +389,8 @@ public class Server {
 
         ServerContext.setServer(new Server(partitionId, replicaId, numReplicas, numPartitions));
         ServerContext.setGstAggregator(new GSTAggregator());
+        ServerContext.setHeartbeatPusher(new HeartbeatPusher());
+        ServerContext.setHeartbeatReceiver(new HeartbeatReceiver());
 
         /**
          * Start the server
@@ -395,6 +401,23 @@ public class Server {
 
     public int getNumPartitions() {
         return numPartitions;
+    }
+
+    public int getNumReplicas() {
+        return numReplicas;
+    }
+
+    /**
+     * Processes a heartbeat request
+     * @param req - request to process
+     * @return - a received message
+     */
+
+    private String processHeartbeatRequest(Request req) {
+        String payload = req.params(ServerConstants.PAYLOAD_PARAM);
+
+        ServerContext.getHeartbeatReceiver().addMessage(payload);
+        return ResponseEnum.RECEIVED.toString();
     }
 
     public Timestamp getGlobalStableTime() {
