@@ -218,11 +218,13 @@ public class Server {
 
     private void sendReplicateReq(int port, Item d) {
 
+        String itemJSON = new Gson().toJson(d);
+
         try {
             Unirest.put("http://localhost:{port}/replicate/{id}/{item}")
                     .routeParam("port", Integer.toString(port))
                     .routeParam("id", Integer.toString(this.replicaId))
-                    .routeParam("item", d.toString())
+                    .routeParam("item", itemJSON)
                     .asString();
 
         } catch (kong.unirest.UnirestException ke) {
@@ -275,7 +277,7 @@ public class Server {
     private String processReplicateRequest(Request req) {
         this.logger.logPrint("Processing Replicate Request");
         int replicaReceivedFrom = Integer.parseInt(req.splat()[0]);
-        Item d = new Item(req.splat()[1]);
+        Item d = new Gson().fromJson(req.splat()[1], Item.class);
 
         addVersion(d);
         this.setVersionVector(replicaReceivedFrom, d.getUpdateTime());
