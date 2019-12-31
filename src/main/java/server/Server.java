@@ -58,12 +58,12 @@ public class Server {
          * Start GST Aggregator Service
          */
 
-//        ServerContext.getGstAggregator().start();
-//
-//        if (ServerContext.getGstAggregator().isLeaf()) { // start up leaf pusher if this gst thread is a leaf
-//            ServerContext.setLeafPusher(new LeafPusher());
-//            ServerContext.getLeafPusher().start();
-//        }
+        ServerContext.getGstAggregator().start();
+
+        if (ServerContext.getGstAggregator().isLeaf()) { // start up leaf pusher if this gst thread is a leaf
+            ServerContext.setLeafPusher(new LeafPusher());
+            ServerContext.getLeafPusher().start();
+        }
 
         ServerContext.getHeartbeatReceiver().start();
         ServerContext.getHeartbeatPusher().start();

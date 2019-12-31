@@ -25,6 +25,7 @@ public class HeartbeatReceiver extends MessageBox {
 
         while (true) {
             String msg = this.pollMessage();
+            ServerContext.getServer().getLogger().logPrint("Polling: " + msg);
             processMessage(msg);
         }
     }
