@@ -1,5 +1,6 @@
 package server;
 
+import com.google.gson.Gson;
 import kong.unirest.Unirest;
 import util.MessageBox;
 import util.Timestamp;
@@ -85,13 +86,11 @@ public class GSTAggregator extends MessageBox {
      */
 
     public String createPayloadForPushUp(Timestamp ts) {
-        String[] tokens = new String[3];
+        AggregationEnum aggregationEnum = AggregationEnum.LOCAL_MIN_LST;
+        int senderId = ServerContext.getServer().getPartitionId();
 
-        tokens[0] = AggregationEnum.LOCAL_MIN_LST.toString();
-        tokens[1] = Integer.toString(ServerContext.getServer().getPartitionId());
-        tokens[2] = ts.toString();
-
-        return String.join("+", tokens);
+        AggregationMessage msg = new AggregationMessage(aggregationEnum, senderId, ts);
+        return new Gson().toJson(msg);
     }
 
     /**
@@ -101,13 +100,11 @@ public class GSTAggregator extends MessageBox {
      */
 
     private String createPayloadForPushDown(Timestamp ts){
-        String[] tokens = new String[3];
+        AggregationEnum aggregationEnum = AggregationEnum.GLOBAL_MIN_LST;
+        int senderId = ServerContext.getServer().getPartitionId();
 
-        tokens[0] = AggregationEnum.GLOBAL_MIN_LST.toString();
-        tokens[1] = Integer.toString(ServerContext.getServer().getPartitionId());
-        tokens[2] = ts.toString();
-
-        return String.join("+", tokens);
+        AggregationMessage msg = new AggregationMessage(aggregationEnum, senderId, ts);
+        return new Gson().toJson(msg);
     }
 
     /**
@@ -181,7 +178,7 @@ public class GSTAggregator extends MessageBox {
                 Timestamp minLST = (leftLST.compareTo(rightLST) <= 0) ? leftLST : rightLST;
                 Timestamp trueMinLST = (minLST.compareTo(myMin) <= 0) ? minLST : myMin;
 
-                this.sendMsg(this.parentPort, createPayloadForPushUp(trueMinLST));
+                this.sendMsg(this.parentPort, this.createPayloadForPushUp(trueMinLST));
             }
 
             return;
@@ -193,7 +190,7 @@ public class GSTAggregator extends MessageBox {
             assert leftLST != null;
             Timestamp trueMinLST = (leftLST.compareTo(myMin) <= 0) ? leftLST : myMin;
 
-            this.sendMsg(this.parentPort, createPayloadForPushUp(trueMinLST));
+            this.sendMsg(this.parentPort, this.createPayloadForPushUp(trueMinLST));
             return;
         }
 
@@ -251,7 +248,7 @@ public class GSTAggregator extends MessageBox {
                 ServerContext.getServer().getLogger().logPrint("Changed GST: " + trueMinLST);
             }
 
-            this.sendMsg(this.leftPort, createPayloadForPushDown(trueMinLST));
+            this.sendMsg(this.leftPort, this.createPayloadForPushDown(trueMinLST));
             return;
 
         }
@@ -267,7 +264,7 @@ public class GSTAggregator extends MessageBox {
                 ServerContext.getServer().getLogger().logPrint("Changed GST: " + trueMinLST);
             }
 
-            this.sendMsg(this.rightPort, createPayloadForPushDown(trueMinLST));
+            this.sendMsg(this.rightPort, this.createPayloadForPushDown(trueMinLST));
 
         }
     }
@@ -277,15 +274,15 @@ public class GSTAggregator extends MessageBox {
      * @param tokens - the message to be pushed
      */
 
-    private void pushMessages(String[] tokens) {
-        assert (AggregationEnum.valueOf(tokens[0]) == AggregationEnum.LOCAL_MIN_LST); // sanity check
+    private void pushMessages(AggregationMessage tokens) {
+        assert (tokens.getAggregationEnum() == AggregationEnum.LOCAL_MIN_LST); // sanity check
 
-        int id = Integer.parseInt(tokens[1]);
-        Timestamp lst = new Timestamp(tokens[2]);
+        int id = tokens.getSenderId();
+        Timestamp lst = tokens.getTimestamp();
 
         if (this.isLeaf) {
 
-            this.sendMsg(this.parentPort, createPayloadForPushUp(lst));
+            this.sendMsg(this.parentPort, this.createPayloadForPushUp(lst));
             return;
         }
 
@@ -332,8 +329,8 @@ public class GSTAggregator extends MessageBox {
 
     private void processMessage(String msg) {
 
-        String[] tokens = msg.split("\\+");
-        AggregationEnum messageType = AggregationEnum.valueOf(tokens[0]);
+        AggregationMessage tokens = new Gson().fromJson(msg, AggregationMessage.class);
+        AggregationEnum messageType = tokens.getAggregationEnum();
 
         switch (messageType) {
 
@@ -342,7 +339,7 @@ public class GSTAggregator extends MessageBox {
                 break;
 
             case GLOBAL_MIN_LST: // this is the time that is pushed down - we set this server's GST to this value
-                Timestamp currTS = new Timestamp(tokens[2]);
+                Timestamp currTS = tokens.getTimestamp();
                 Timestamp oldTS = ServerContext.getServer().getGlobalStableTime();
                 ServerContext.getServer().setGlobalStableTime(currTS);
 
