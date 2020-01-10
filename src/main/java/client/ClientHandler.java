@@ -1,7 +1,8 @@
 package client;
 
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 import util.ClientHandlerEnum;
-import kong.unirest.*;
 
 /***
  * Handler that is used by the client to communicate over REST API
