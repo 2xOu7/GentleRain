@@ -18,8 +18,10 @@ public class Client extends Thread {
     private Timestamp dependencyTime;
     private Timestamp globalStableTime;
     private String delimiter = " ";
+    private int replicaId;
 
     public Client(int numPartitions, int replicaId) {
+        this.replicaId = replicaId;
         clientHandler = new ClientHandler(replicaId, numPartitions);
 
         Timestamp now = new Timestamp(replicaId, -1);
@@ -149,5 +151,9 @@ public class Client extends Thread {
 //        int numPartitions = 5; // number of partitions in the data center
 //        int replicaId = 1; // replica id or the id of this data center
         new Client(numPartitions, replicaId);
+    }
+
+    public int getReplicaId() {
+        return replicaId;
     }
 }

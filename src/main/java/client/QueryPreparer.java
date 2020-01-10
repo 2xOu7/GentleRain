@@ -1,8 +1,10 @@
 package client;
 import spark.Request;
 import spark.Response;
+
 /**
  * Prepares all queries prior to the query being processed
+ * Includes all logging of query information
  */
 
 public class QueryPreparer {
@@ -17,6 +19,7 @@ public class QueryPreparer {
      */
 
     public static void prepareQuery(Request req, Response res) {
+        System.out.println("Executing " + req.requestMethod() + " + request at: " + req.url());
         res.header(CONTENT_TYPE, JSON_RES);
     }
 
