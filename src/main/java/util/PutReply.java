@@ -2,7 +2,7 @@ package util;
 
 import com.google.gson.Gson;
 
-public class PutReply {
+public class PutReply extends JSONSerializable {
 
     private Timestamp dependencyTime;
 
@@ -12,11 +12,6 @@ public class PutReply {
 
     public Timestamp getDependencyTime() {
         return this.dependencyTime;
-    }
-
-    @Override
-    public String toString() {
-        return new Gson().toJson(this);
     }
 
     public PutReply(String serializedForm) {

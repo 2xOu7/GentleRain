@@ -2,7 +2,7 @@ package util;
 
 import com.google.gson.Gson;
 
-public class GetReply {
+public class GetReply extends JSONSerializable {
 
     private String key;
     private Timestamp updateTime;
@@ -30,10 +30,5 @@ public class GetReply {
 
     public Timestamp getGlobalStableTime() {
         return globalStableTime;
-    }
-
-    @Override
-    public String toString() {
-        return new Gson().toJson(this);
     }
 }

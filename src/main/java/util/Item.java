@@ -2,7 +2,7 @@ package util;
 
 import com.google.gson.Gson;
 
-public class Item {
+public class Item extends JSONSerializable {
     private String key;
     private String value;
     private Timestamp updateTime;
@@ -37,10 +37,5 @@ public class Item {
 
     public int getSourceReplica() {
         return sourceReplica;
-    }
-
-    @Override
-    public String toString() {
-        return new Gson().toJson(this);
     }
 }

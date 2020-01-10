@@ -2,9 +2,7 @@ package util;
 
 import com.google.gson.Gson;
 
-import java.sql.Time;
-
-public class Timestamp implements Comparable<Timestamp> {
+public class Timestamp extends JSONSerializable implements Comparable<Timestamp> {
 
     private long clockTime;
     private int replicaId;
@@ -58,11 +56,6 @@ public class Timestamp implements Comparable<Timestamp> {
 
     public int getPartitionId() {
         return partitionId;
-    }
-
-    @Override
-    public String toString() {
-        return new Gson().toJson(this);
     }
 
     @Override

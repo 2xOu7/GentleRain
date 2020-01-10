@@ -1,9 +1,10 @@
 package server;
 
 import com.google.gson.Gson;
+import util.JSONSerializable;
 import util.Timestamp;
 
-public class AggregationMessage {
+public class AggregationMessage extends JSONSerializable  {
 
     private int senderId;
     private Timestamp timestamp;
@@ -26,11 +27,6 @@ public class AggregationMessage {
 
     public AggregationEnum getAggregationEnum() {
         return aggregationEnum;
-    }
-
-    @Override
-    public String toString() {
-        return new Gson().toJson(this);
     }
 
     public AggregationMessage(String serializedForm) {
