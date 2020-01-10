@@ -1,5 +1,7 @@
 package util;
 
+import com.google.gson.Gson;
+
 import java.sql.Time;
 
 public class Timestamp implements Comparable<Timestamp> {
@@ -18,11 +20,11 @@ public class Timestamp implements Comparable<Timestamp> {
     }
 
     public Timestamp(String serializedForm) {
-        String[] tokens = serializedForm.split(delimiter);
+        Timestamp curr = new Gson().fromJson(serializedForm, Timestamp.class);
+        this.clockTime = curr.getClockTime();
+        this.replicaId = curr.getReplicaId();
+        this.partitionId = curr.getPartitionId();
 
-        this.clockTime = Long.parseLong(tokens[0]);
-        this.replicaId = Integer.parseInt(tokens[1]);
-        this.partitionId = Integer.parseInt(tokens[2]);
     }
 
     public Timestamp(int replicaId, int partitionId) {
@@ -60,13 +62,7 @@ public class Timestamp implements Comparable<Timestamp> {
 
     @Override
     public String toString() {
-        String[] tokens = new String[3];
-
-        tokens[0] = Long.toString(this.clockTime);
-        tokens[1] = Integer.toString(this.replicaId);
-        tokens[2] = Integer.toString(this.partitionId);
-
-        return String.join(delimiter, tokens);
+        return new Gson().toJson(this);
     }
 
     @Override
