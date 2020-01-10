@@ -222,7 +222,7 @@ public class Server {
 
     private void sendReplicateReq(int port, Item d) {
 
-        String itemJSON = new Gson().toJson(d);
+        String itemJSON = d.toString();
 
         try {
             Unirest.put("http://localhost:{port}/replicate/{id}/{item}")

@@ -1,11 +1,12 @@
 package util;
 
+import com.google.gson.Gson;
+
 public class Item {
     private String key;
     private String value;
     private Timestamp updateTime;
     private int sourceReplica;
-    private String delimiter = "<";
 
     public Item(String key, String value, Timestamp ut, int sourceReplica) {
         this.key = key;
@@ -15,11 +16,11 @@ public class Item {
     }
 
     public Item(String serializedForm) {
-        String[] tokens = serializedForm.split("<");
-        this.key = tokens[0];
-        this.value = tokens[1];
-        this.updateTime = new Timestamp(tokens[2]);
-        this.sourceReplica = Integer.parseInt(tokens[3]);
+        Item d = new Gson().fromJson(serializedForm, Item.class);
+        this.key = d.getKey();
+        this.value = d.getValue();
+        this.updateTime = d.getUpdateTime();
+        this.sourceReplica = d.getSourceReplica();
     }
 
     public String getKey() {
@@ -40,13 +41,6 @@ public class Item {
 
     @Override
     public String toString() {
-        String[] tokens = new String[4];
-
-        tokens[0] = this.key;
-        tokens[1] = this.value;
-        tokens[2] = this.updateTime.toString();
-        tokens[3] = Integer.toString(this.sourceReplica);
-
-        return String.join(this.delimiter, tokens);
+        return new Gson().toJson(this);
     }
 }
