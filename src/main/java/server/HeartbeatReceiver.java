@@ -1,6 +1,4 @@
 package server;
-
-import com.google.gson.Gson;
 import util.MessageBox;
 import util.Timestamp;
 
@@ -16,7 +14,7 @@ public class HeartbeatReceiver extends MessageBox {
      */
 
     public void processMessage(String msg) {
-        Timestamp ts = new Gson().fromJson(msg, Timestamp.class);
+        Timestamp ts = new Timestamp(msg);
         ServerContext.getServer().setVersionVector(ts.getReplicaId(), ts);
     }
 

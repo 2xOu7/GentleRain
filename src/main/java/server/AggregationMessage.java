@@ -1,5 +1,6 @@
 package server;
 
+import com.google.gson.Gson;
 import util.Timestamp;
 
 public class AggregationMessage {
@@ -25,5 +26,17 @@ public class AggregationMessage {
 
     public AggregationEnum getAggregationEnum() {
         return aggregationEnum;
+    }
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
+    }
+
+    public AggregationMessage(String serializedForm) {
+        AggregationMessage am = new Gson().fromJson(serializedForm, AggregationMessage.class);
+        this.aggregationEnum = am.getAggregationEnum();
+        this.senderId = am.getSenderId();
+        this.timestamp = am.getTimestamp();
     }
 }

@@ -61,7 +61,7 @@ public class Client extends Thread {
             return new Gson().toJson(new Object());
         }
 
-        GetReply reply = new Gson().fromJson(response, GetReply.class);
+        GetReply reply = new GetReply(response);
 
         if (this.dependencyTime.compareTo(reply.getUpdateTime()) < 0) {
             this.dependencyTime = reply.getUpdateTime();
@@ -110,7 +110,7 @@ public class Client extends Thread {
         String clientHandlerMsg = createPutReqMessage(key, value, dependencyTime);
 
         String response = fetchResultFromClientHandler(clientHandlerMsg);
-        PutReply reply = new Gson().fromJson(response, PutReply.class);
+        PutReply reply = new PutReply(response);
 
         if (this.dependencyTime.compareTo(reply.getDependencyTime()) < 0) {
             this.dependencyTime = reply.getDependencyTime();

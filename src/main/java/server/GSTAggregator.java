@@ -90,7 +90,7 @@ public class GSTAggregator extends MessageBox {
         int senderId = ServerContext.getServer().getPartitionId();
 
         AggregationMessage msg = new AggregationMessage(aggregationEnum, senderId, ts);
-        return new Gson().toJson(msg);
+        return msg.toString();
     }
 
     /**
@@ -104,7 +104,7 @@ public class GSTAggregator extends MessageBox {
         int senderId = ServerContext.getServer().getPartitionId();
 
         AggregationMessage msg = new AggregationMessage(aggregationEnum, senderId, ts);
-        return new Gson().toJson(msg);
+        return msg.toString();
     }
 
     /**
@@ -329,7 +329,7 @@ public class GSTAggregator extends MessageBox {
 
     private void processMessage(String msg) {
 
-        AggregationMessage tokens = new Gson().fromJson(msg, AggregationMessage.class);
+        AggregationMessage tokens = new AggregationMessage(msg);
         AggregationEnum messageType = tokens.getAggregationEnum();
 
         switch (messageType) {

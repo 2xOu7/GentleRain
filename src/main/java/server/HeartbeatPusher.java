@@ -73,7 +73,7 @@ public class HeartbeatPusher extends Thread {
 
     private void sendHeartbeat(int i) {
         int portToForward = ServerConstants.BASE_PORT * i + partitionId;
-        String payload = new Gson().toJson(ServerContext.getServer().getVersionVector()[this.replicaId]);
+        String payload = ServerContext.getServer().getVersionVector()[this.replicaId].toString();
 
         try {
 

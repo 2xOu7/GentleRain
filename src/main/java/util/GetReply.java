@@ -1,5 +1,7 @@
 package util;
 
+import com.google.gson.Gson;
+
 public class GetReply {
 
     private String key;
@@ -12,6 +14,12 @@ public class GetReply {
         this.globalStableTime = globalStableTime;
     }
 
+    public GetReply(String serializedForm) {
+        GetReply gr = new Gson().fromJson(serializedForm, GetReply.class);
+        this.key = gr.getKey();
+        this.updateTime = gr.getUpdateTime();
+        this.globalStableTime = gr.getGlobalStableTime();
+    }
     public String getKey() {
         return key;
     }
@@ -22,5 +30,10 @@ public class GetReply {
 
     public Timestamp getGlobalStableTime() {
         return globalStableTime;
+    }
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
     }
 }

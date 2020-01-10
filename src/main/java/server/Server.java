@@ -98,7 +98,7 @@ public class Server {
 
     private String constructSuccessfulGetResponse(Item item) {
         GetReply gr = new GetReply(item.getValue(), item.getUpdateTime(), this.globalStableTime);
-        return new Gson().toJson(gr);
+        return gr.toString();
     }
 
     /**
@@ -244,7 +244,7 @@ public class Server {
 
     private String constructSuccessfulPutResponse(Timestamp ts) {
         PutReply pr = new PutReply(ts);
-        return new Gson().toJson(pr);
+        return pr.toString();
     }
 
     /**
@@ -281,7 +281,7 @@ public class Server {
     private String processReplicateRequest(Request req) {
         this.logger.logPrint("Processing Replicate Request");
         int replicaReceivedFrom = Integer.parseInt(req.splat()[0]);
-        Item d = new Gson().fromJson(req.splat()[1], Item.class);
+        Item d = new Item(req.splat()[1]);
 
         addVersion(d);
         this.setVersionVector(replicaReceivedFrom, d.getUpdateTime());
