@@ -43,7 +43,7 @@ public class HeartbeatPusher extends Thread {
 
     private boolean isValidToChangeVV(long currTime, long delta) {
         Timestamp[] currVV = ServerContext.getServer().getVersionVector();
-        return currTime >= currVV[this.replicaId].getClockTime() + delta;
+        return currTime >= currVV[this.replicaId].getPhysicalClockTime() + delta;
     }
 
     /**

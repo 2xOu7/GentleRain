@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 
 public class Timestamp extends JSONSerializable implements Comparable<Timestamp> {
 
-    private long clockTime;
+    private long physicalClockTime;
     private int replicaId;
     private int partitionId;
     private static String delimiter = "@";
@@ -14,19 +14,19 @@ public class Timestamp extends JSONSerializable implements Comparable<Timestamp>
      */
 
     public Timestamp() {
-        this.clockTime = System.nanoTime();
+        this.physicalClockTime = System.nanoTime();
     }
 
     public Timestamp(String serializedForm) {
         Timestamp curr = new Gson().fromJson(serializedForm, Timestamp.class);
-        this.clockTime = curr.getClockTime();
+        this.physicalClockTime = curr.getPhysicalClockTime();
         this.replicaId = curr.getReplicaId();
         this.partitionId = curr.getPartitionId();
 
     }
 
     public Timestamp(int replicaId, int partitionId) {
-        this.clockTime = System.nanoTime();
+        this.physicalClockTime = System.nanoTime();
         this.replicaId = replicaId;
         this.partitionId = partitionId;
     }
@@ -37,7 +37,7 @@ public class Timestamp extends JSONSerializable implements Comparable<Timestamp>
     }
 
     public Timestamp timestamp(long ts) {
-        this.clockTime = ts;
+        this.physicalClockTime = ts;
         return this;
     }
 
@@ -46,8 +46,8 @@ public class Timestamp extends JSONSerializable implements Comparable<Timestamp>
         return this;
     }
 
-    public long getClockTime() {
-        return clockTime;
+    public long getPhysicalClockTime() {
+        return physicalClockTime;
     }
 
     public int getReplicaId() {
@@ -61,11 +61,11 @@ public class Timestamp extends JSONSerializable implements Comparable<Timestamp>
     @Override
     public int compareTo(Timestamp o) {
 
-        if (this.clockTime < o.clockTime) {
+        if (this.physicalClockTime < o.physicalClockTime) {
             return -1;
         }
 
-        if (this.clockTime > o.clockTime) {
+        if (this.physicalClockTime > o.physicalClockTime) {
             return 1;
         }
 

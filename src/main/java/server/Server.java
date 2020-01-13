@@ -255,7 +255,7 @@ public class Server {
      */
 
     private long waitUntil(Timestamp dt) {
-        long timeToWaitFor = dt.getClockTime();
+        long timeToWaitFor = dt.getPhysicalClockTime();
         long currTime = System.nanoTime();
 
         while (currTime <= timeToWaitFor) {
