@@ -31,6 +31,7 @@ public class Client extends Thread {
         int portToBind = ClientConstants.CLIENT_BASE_PORT + replicaId;
         port(portToBind); // bind the client to the given port
 
+        after(QueryPreparer::prepareQuery);
         /*******************************************************************
          * GET route for a given key
          *******************************************************************/
@@ -51,7 +52,7 @@ public class Client extends Thread {
      */
 
     private String processGetRequest(Request req, Response res) {
-        QueryPreparer.prepareQuery(req, res);
+//        QueryPreparer.prepareQuery(req, res);
         String key = req.params(ClientConstants.KEY_PARAM); // get the key
         String clientHandlerMsg = createGetReqMessage(key); // create a get request message involving the key
 
@@ -101,7 +102,7 @@ public class Client extends Thread {
      */
 
     private String processPutRequest(Request req, Response res) {
-        QueryPreparer.prepareQuery(req, res);
+//        QueryPreparer.prepareQuery(req, res);
 
         String key = req.splat()[0];
         String value = req.splat()[1];
