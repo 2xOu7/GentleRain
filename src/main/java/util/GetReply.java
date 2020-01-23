@@ -20,6 +20,7 @@ public class GetReply extends JSONSerializable {
         this.updateTime = gr.getUpdateTime();
         this.globalStableTime = gr.getGlobalStableTime();
     }
+
     public String getKey() {
         return key;
     }

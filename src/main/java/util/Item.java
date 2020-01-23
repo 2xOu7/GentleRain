@@ -3,6 +3,7 @@ package util;
 import com.google.gson.Gson;
 
 public class Item extends JSONSerializable {
+
     private String key;
     private String value;
     private Timestamp updateTime;
