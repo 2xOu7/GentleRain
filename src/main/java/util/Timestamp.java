@@ -7,7 +7,6 @@ public class Timestamp extends JSONSerializable implements Comparable<Timestamp>
     private long physicalClockTime;
     private int replicaId;
     private int partitionId;
-    private static String delimiter = "@";
 
     /**
      * Creates a timestamp with the time at instantiation as the clockTime (JVM clock)
