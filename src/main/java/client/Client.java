@@ -148,9 +148,6 @@ public class Client extends Thread {
     public static void main(String[] args) {
         int numPartitions = Integer.parseInt(args[0]); // number of partitions in the data center
         int replicaId = Integer.parseInt(args[1]); // replica id or the id of this data center
-
-//        int numPartitions = 5; // number of partitions in the data center
-//        int replicaId = 1; // replica id or the id of this data center
         new Client(numPartitions, replicaId);
     }
 
