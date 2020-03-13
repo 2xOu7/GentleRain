@@ -401,10 +401,6 @@ public class Server {
         int numReplicas = Integer.parseInt(args[2]); // number of total replicas or data centers
         int numPartitions = Integer.parseInt(args[3]); // number of partitions per data center
 
-//        int partitionId = 4; // the partition id that this server represents
-//        int replicaId = 2; // the replica id that this server is part of and responds to
-//        int numReplicas = 5; // number of total replicas or data center
-
         /**
          * Stage the context for the remainder of this process's lifespan
          */
