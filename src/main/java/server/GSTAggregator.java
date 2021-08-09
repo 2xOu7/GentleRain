@@ -374,8 +374,8 @@ public class GSTAggregator extends MessageBox {
      */
 
     public void run() {
-        waitForStart();
-        debug("GST Aggregator is now beginning");
+        this.waitForStart();
+        this.debug("GST Aggregator is now beginning");
 
         while (true) {
             String msg = this.pollMessage();
