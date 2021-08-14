@@ -1,3 +1,3 @@
 # GentleRain
 
-Causal consistency using physical clocks.
+Causal consistency using physical clocks..
